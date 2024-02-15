@@ -2,15 +2,30 @@ import { createTimer } from './timer.svelte';
 
 export function createRoutine() {
 	const sets = $state([
-		{ name: 'Work', timer: createTimer(5) },
+		{
+			name: 'Work',
+			timer: createTimer(5)
+		},
 		{ name: 'Rest', timer: createTimer(3) },
-		{ name: 'Work', timer: createTimer(5) },
+		{
+			name: 'Work',
+			timer: createTimer(5)
+		},
 		{ name: 'Rest', timer: createTimer(3) },
-		{ name: 'Work', timer: createTimer(5) },
-		{ name: 'Rest', timer: createTimer(3) },
-		{ name: 'Work', timer: createTimer(5) }
+		{
+			name: 'Work',
+			timer: createTimer(5)
+		},
+		{ name: 'Rest', timer: createTimer(3) }
 	]);
-	const totalSets = $derived(sets.length);
+
+	const firstSetIndex = $state(0);
+	const firstSet = $derived(sets[firstSetIndex]);
+
+	const lastSetIndex = $state(sets.length - 1);
+	const lastSet = $derived(sets[lastSetIndex]);
+
+	const totalAmountOfSets = $derived(sets.length);
 
 	let isRunning = $state(false);
 
@@ -22,64 +37,76 @@ export function createRoutine() {
 		isRunning = false;
 	}
 
-	let isLocked = $state(false);
-
-	function lock() {
-		isLocked = true;
-	}
-
-	function unlock() {
-		isLocked = false;
-	}
-
 	let currentSetIndex = $state(0);
 	const currentSet = $derived(sets[currentSetIndex]);
-	const firstSet = $derived(sets[0]);
-	const lastSet = $derived(sets[sets.length - 1]);
+
+	let previousSetIndex = $state(0);
+	const previousSet = $derived(sets[previousSetIndex]);
+
+	function decrementCurrentSetIndex() {
+		if (currentSetIndex === firstSetIndex) return;
+
+		previousSetIndex = currentSetIndex;
+		currentSetIndex--;
+	}
+
+	function incrementCurrentSetIndex() {
+		if (currentSetIndex === lastSetIndex) return;
+
+		previousSetIndex = currentSetIndex;
+		currentSetIndex++;
+	}
+
+	function initiatePreviousSet() {
+		if (currentSet.timer.initialAmountOfSeconds !== currentSet.timer.timeInSeconds) {
+			currentSet.timer.reset();
+			return;
+		}
+
+		if (currentSetIndex === firstSetIndex) {
+			currentSet.timer.reset();
+			return;
+		}
+
+		decrementCurrentSetIndex();
+
+		previousSet.timer.reset();
+		currentSet.timer.reset();
+	}
+
+	function initiateNextSet() {
+		if (currentSetIndex === lastSetIndex) {
+			currentSet.timer.complete();
+			return;
+		}
+
+		incrementCurrentSetIndex();
+
+		previousSet.timer.complete();
+		currentSet.timer.reset();
+	}
 
 	const totalTimeInSeconds = $derived(sets.reduce((acc, set) => acc + set.timer.timeInSeconds, 0));
 	const currentTotalTimeInSeconds = $derived(
 		sets.slice(currentSetIndex, sets.length).reduce((acc, set) => acc + set.timer.timeInSeconds, 0)
 	);
 
-	function nextSet() {
-		if (currentSetIndex >= sets.length - 1) return;
-
-		currentSet.timer.complete();
-
-		currentSetIndex++;
-	}
-
-	function previousSet() {
-		if (currentSet === firstSet) {
-			currentSet.timer.reset();
-
-			return;
-		}
-
-		currentSet.timer.reset();
-
-		currentSetIndex--;
-
-		currentSet.timer.reset();
-	}
-
 	$effect(() => {
 		if (isRunning) {
-			sets[currentSetIndex].timer.start();
+			currentSet.timer.start();
 		} else {
-			sets[currentSetIndex].timer.stop();
+			currentSet.timer.stop();
 		}
 	});
 
 	$effect(() => {
-		if (sets[currentSetIndex].timer.isCompleted) {
-			nextSet();
+		if (currentSet.timer.isCompleted) {
+			incrementCurrentSetIndex();
 		}
 	});
 
 	$effect(() => {
-		if (currentSetIndex === sets.length - 1 && sets[currentSetIndex].timer.isCompleted) {
+		if (currentSetIndex === lastSetIndex && currentSet.timer.isCompleted) {
 			isRunning = false;
 		}
 	});
@@ -88,8 +115,8 @@ export function createRoutine() {
 		get sets() {
 			return sets;
 		},
-		get totalSets() {
-			return totalSets;
+		get totalAmountOfSets() {
+			return totalAmountOfSets;
 		},
 		get currentSetIndex() {
 			return currentSetIndex;
@@ -97,8 +124,17 @@ export function createRoutine() {
 		get currentSet() {
 			return currentSet;
 		},
+		get previousSet() {
+			return previousSet;
+		},
+		get firstSetIndex() {
+			return firstSetIndex;
+		},
 		get firstSet() {
 			return firstSet;
+		},
+		get lastSetIndex() {
+			return lastSetIndex;
 		},
 		get lastSet() {
 			return lastSet;
@@ -112,14 +148,9 @@ export function createRoutine() {
 		get isRunning() {
 			return isRunning;
 		},
-		get isLocked() {
-			return isLocked;
-		},
 		start,
 		stop,
-		lock,
-		unlock,
-		nextSet,
-		previousSet
+		initiateNextSet,
+		initiatePreviousSet
 	};
 }

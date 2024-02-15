@@ -13,16 +13,26 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 
 	let routine = createRoutine();
+
+	let isLocked = $state(false);
+
+	function lock() {
+		isLocked = true;
+	}
+
+	function unlock() {
+		isLocked = false;
+	}
 </script>
 
 <main class="flex h-dvh max-h-lvh flex-col justify-between">
 	<section class="flex items-center justify-between p-6 pb-0">
-		{#if routine.isLocked}
-			<Button onclick={routine.unlock}>
+		{#if isLocked}
+			<Button onclick={unlock}>
 				<UnlockIcon />
 			</Button>
 		{:else}
-			<Button onclick={routine.lock}>
+			<Button onclick={lock}>
 				<LockIcon />
 			</Button>
 		{/if}
@@ -30,11 +40,11 @@
 		<span class="text-6xl">{routine.currentTotalTimeInSeconds}</span>
 
 		{#if routine.isRunning}
-			<Button onclick={routine.stop} disabled={routine.isLocked}>
+			<Button onclick={routine.stop} disabled={isLocked}>
 				<PauseIcon />
 			</Button>
 		{:else}
-			<Button onclick={routine.start} disabled={routine.isLocked}>
+			<Button onclick={routine.start} disabled={isLocked}>
 				<PlayIcon />
 			</Button>
 		{/if}
@@ -53,11 +63,11 @@
 	</section>
 
 	<section class="flex items-center justify-between p-6">
-		<Button onclick={routine.previousSet} aria-label="Previous Set" disabled={routine.isLocked}
+		<Button onclick={routine.initiatePreviousSet} aria-label="Previous Set" disabled={isLocked}
 			><ArrowLeftIcon /></Button
 		>
-		<span class="text-4xl">{routine.currentSetIndex + 1}/{routine.totalSets}</span>
-		<Button onclick={routine.nextSet} aria-label="Next Set" disabled={routine.isLocked}
+		<span class="text-4xl">{routine.currentSetIndex + 1}/{routine.totalAmountOfSets}</span>
+		<Button onclick={routine.initiateNextSet} aria-label="Next Set" disabled={isLocked}
 			><ArrowRightIcon /></Button
 		>
 	</section>
