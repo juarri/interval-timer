@@ -1,28 +1,36 @@
-export function createTimer(initialAmountOfSeconds: number) {
-	let secondsRemaining = $state(initialAmountOfSeconds);
-	let previousSecondsRemaining = $state(secondsRemaining);
+import { Temporal } from '@js-temporal/polyfill';
+
+export function createTimer(initialAmountOfTime: Temporal.Duration) {
+	let amountOfTime = $state(initialAmountOfTime);
+	let amountOfTimeRemaining = $state(amountOfTime);
+	let previousSecondsRemaining = $state(amountOfTimeRemaining);
 
 	let isRunning = $state(false);
-	const isCompleted = $derived(secondsRemaining === 0);
+	const isCompleted = $derived(amountOfTimeRemaining.blank);
 
 	let hasReset = $state(false);
 	let hasStarted = $state(false);
 	let hasStopped = $state(false);
 
+	function setAmountOfTime(newAmountOfTime: Temporal.Duration) {
+		amountOfTime = newAmountOfTime;
+		amountOfTimeRemaining = amountOfTime;
+	}
+
 	function decrementTimerBySecond() {
-		previousSecondsRemaining = secondsRemaining;
-		secondsRemaining--;
+		previousSecondsRemaining = amountOfTimeRemaining;
+		amountOfTimeRemaining = amountOfTimeRemaining.subtract({ seconds: 1 });
 	}
 
 	function reset() {
-		secondsRemaining = initialAmountOfSeconds;
-		previousSecondsRemaining = secondsRemaining;
+		amountOfTimeRemaining = amountOfTime;
+		previousSecondsRemaining = amountOfTimeRemaining;
 
 		hasReset = true;
 	}
 
 	function complete() {
-		secondsRemaining = 0;
+		amountOfTimeRemaining = Temporal.Duration.from({ seconds: 0 });
 	}
 
 	function start() {
@@ -71,48 +79,42 @@ export function createTimer(initialAmountOfSeconds: number) {
 
 	function onReset(callback: () => void) {
 		$effect(() => {
-			if (secondsRemaining === initialAmountOfSeconds && hasReset) {
+			if (amountOfTimeRemaining === amountOfTime && hasReset) {
 				callback();
 			}
 		});
 	}
 
 	function onSecondPassed(
-		callback: (secondsRemaining: number, previousSecondsRemaining: number) => void
+		callback: (
+			secondsRemaining: Temporal.Duration,
+			previousSecondsRemaining: Temporal.Duration
+		) => void
 	) {
 		$effect(() => {
-			if (secondsRemaining !== previousSecondsRemaining) {
-				callback(secondsRemaining, previousSecondsRemaining);
+			if (amountOfTimeRemaining !== previousSecondsRemaining) {
+				callback(amountOfTimeRemaining, previousSecondsRemaining);
 			}
 		});
 	}
 
 	$effect(() => {
-		if (isRunning && secondsRemaining > 0) {
+		if (isRunning && !amountOfTimeRemaining.blank) {
 			const interval = setInterval(decrementTimerBySecond, 1000);
 
 			return () => clearInterval(interval);
 		}
 	});
 
-	$effect(() => {
-		if (secondsRemaining === 0) {
-			stop();
-		}
-	});
-
-	$effect(() => {
-		if (isRunning && secondsRemaining === 0) {
-			reset();
-		}
-	});
-
 	return {
-		get initialAmountOfSeconds() {
-			return initialAmountOfSeconds;
+		get amountOfTime() {
+			return amountOfTime;
+		},
+		get amountOfTimeRemaining() {
+			return amountOfTimeRemaining;
 		},
 		get timeInSeconds() {
-			return secondsRemaining;
+			return amountOfTimeRemaining;
 		},
 		get isRunning() {
 			return isRunning;
@@ -120,6 +122,7 @@ export function createTimer(initialAmountOfSeconds: number) {
 		get isCompleted() {
 			return isCompleted;
 		},
+		setAmountOfTime,
 		start,
 		stop,
 		toggle,

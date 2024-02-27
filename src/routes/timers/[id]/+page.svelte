@@ -14,6 +14,13 @@
 
 	let routine = createRoutine();
 
+	const roundedTime = $derived(
+		routine.totalTimeRemaining.round({
+			largestUnit: 'hours',
+			smallestUnit: 'seconds'
+		})
+	);
+
 	let isLocked = $state(false);
 
 	function lock() {
@@ -37,7 +44,9 @@
 			</Button>
 		{/if}
 
-		<span class="text-6xl">{routine.currentTotalTimeInSeconds}</span>
+		<span class="text-6xl">
+			{roundedTime.hours}:{roundedTime.minutes}:{roundedTime.seconds.toString().padStart(2, '0')}
+		</span>
 
 		{#if routine.isRunning}
 			<Button onclick={routine.stop} disabled={isLocked}>
@@ -51,13 +60,17 @@
 	</section>
 
 	<section class="flex justify-center">
-		<span class="text-[35vh] leading-none">{routine.currentSet.timer.timeInSeconds}</span>
+		<span class="text-[35vh] leading-none">{routine.timer.amountOfTimeRemaining.seconds}</span>
 	</section>
 
 	<section class="mx-auto w-full max-w-screen-md flex-auto overflow-auto px-6">
 		<ol class="flex list-decimal flex-col overflow-scroll">
-			{#each routine.sets as set}
-				<li class="rounded bg-gray-200 p-4 text-center text-2xl">{set.name}</li>
+			{#each routine.sets as set, i}
+				<li>
+					<Button class="h-full w-full rounded  p-4 text-center text-2xl"
+						>{i + 1}. {set.name}</Button
+					>
+				</li>
 			{/each}
 		</ol>
 	</section>
