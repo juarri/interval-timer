@@ -1,21 +1,24 @@
 export function createToggle(initialState: boolean) {
-	let isOn = $state(initialState);
+	let isEnabled = $state(initialState);
 
 	function toggle() {
-		isOn = !isOn;
+		isEnabled = !isEnabled;
 	}
 
 	function enable() {
-		isOn = true;
+		isEnabled = true;
 	}
 
 	function disable() {
-		isOn = false;
+		isEnabled = false;
 	}
 
 	return {
-		get isOn() {
-			return isOn;
+		get isEnabled() {
+			return isEnabled === true;
+		},
+		get isDisabled() {
+			return isEnabled === false;
 		},
 		toggle,
 		enable,

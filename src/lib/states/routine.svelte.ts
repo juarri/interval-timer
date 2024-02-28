@@ -1,43 +1,40 @@
 import { Temporal } from '@js-temporal/polyfill';
 
 import { createTimer } from './timer.svelte';
+import { createToggle } from './toggle.svelte';
 
 export function createRoutine() {
 	const sets = $state([
 		{
 			name: 'Work',
-			time: Temporal.Duration.from({ seconds: 10 })
+			time: Temporal.Duration.from({ hours: 2, minutes: 30, seconds: 17 })
 		},
-		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 3 }) },
+		{ name: 'Rest', time: Temporal.Duration.from({ minutes: 15, seconds: 10 }) },
 		{
 			name: 'Work',
-			time: Temporal.Duration.from({ seconds: 10 })
+			time: Temporal.Duration.from({ seconds: 30 })
 		},
-		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 3 }) },
+		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 10 }) },
 		{
 			name: 'Work',
-			time: Temporal.Duration.from({ seconds: 10 })
+			time: Temporal.Duration.from({ seconds: 30 })
 		},
-		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 3 }) },
+		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 10 }) },
 		{
 			name: 'Work',
-			time: Temporal.Duration.from({ seconds: 10 })
+			time: Temporal.Duration.from({ seconds: 30 })
 		},
-		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 3 }) },
+		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 10 }) },
 		{
 			name: 'Work',
-			time: Temporal.Duration.from({ seconds: 10 })
+			time: Temporal.Duration.from({ seconds: 30 })
 		},
-		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 3 }) },
+		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 10 }) },
 		{
 			name: 'Work',
-			time: Temporal.Duration.from({ seconds: 10 })
+			time: Temporal.Duration.from({ seconds: 30 })
 		}
 	]);
-
-	const setsLength = $derived(sets.length);
-
-	const timer = createTimer(Temporal.Duration.from({ seconds: sets[0].time.seconds }));
 
 	const firstSetIndex = $state(0);
 	const firstSet = $derived(sets[firstSetIndex]);
@@ -45,18 +42,23 @@ export function createRoutine() {
 	const lastSetIndex = $state(sets.length - 1);
 	const lastSet = $derived(sets[lastSetIndex]);
 
-	let isRunning = $state(false);
-
-	function start() {
-		isRunning = true;
-	}
-
-	function stop() {
-		isRunning = false;
-	}
-
-	let currentSetIndex = $state(0);
+	let currentSetIndex = $state(firstSetIndex);
 	const currentSet = $derived(sets[currentSetIndex]);
+
+	const timer = createTimer(currentSet.time);
+
+	const isRunning = createToggle(false);
+
+	const totalTime = $derived(
+		sets.reduce((acc, set) => acc.add(set.time), Temporal.Duration.from({ seconds: 0 }))
+	);
+
+	const totalTimeRemaining = $derived(
+		sets
+			.slice(currentSetIndex + 1)
+			.reduce((acc, set) => acc.add(set.time), Temporal.Duration.from({ seconds: 0 }))
+			.add(timer.timeRemaining)
+	);
 
 	function decrementCurrentSetIndex() {
 		if (currentSetIndex === firstSetIndex) return;
@@ -76,7 +78,7 @@ export function createRoutine() {
 			return;
 		}
 
-		if (timer.amountOfTimeRemaining.seconds === timer.amountOfTime.seconds) {
+		if (timer.timeRemaining === timer.time) {
 			decrementCurrentSetIndex();
 			timer.setAmountOfTime(currentSet.time);
 
@@ -103,22 +105,11 @@ export function createRoutine() {
 		timer.setAmountOfTime(currentSet.time);
 	}
 
-	const totalTime = $derived(
-		sets.reduce((acc, set) => acc.add(set.time), Temporal.Duration.from({ seconds: 0 }))
-	);
-
-	const totalTimeRemaining = $derived(
-		sets
-			.slice(currentSetIndex + 1)
-			.reduce((acc, set) => acc.add(set.time), Temporal.Duration.from({ seconds: 0 }))
-			.add(timer.amountOfTimeRemaining)
-	);
-
 	$effect(() => {
-		if (isRunning) {
-			timer.start();
+		if (isRunning.isEnabled) {
+			timer.isRunning.enable();
 		} else {
-			timer.stop();
+			timer.isRunning.disable();
 		}
 	});
 
@@ -130,12 +121,12 @@ export function createRoutine() {
 
 	$effect(() => {
 		if (currentSet === lastSet && timer.isCompleted) {
-			isRunning = false;
+			isRunning.disable();
 		}
 	});
 
 	$effect(() => {
-		if (currentSet === lastSet && timer.isCompleted && isRunning) {
+		if (currentSet === lastSet && timer.isCompleted && isRunning.isEnabled) {
 			timer.reset();
 		}
 	});
@@ -143,12 +134,6 @@ export function createRoutine() {
 	return {
 		get sets() {
 			return sets;
-		},
-		get setsLength() {
-			return setsLength;
-		},
-		get timer() {
-			return timer;
 		},
 		get currentSetIndex() {
 			return currentSetIndex;
@@ -168,6 +153,9 @@ export function createRoutine() {
 		get lastSet() {
 			return lastSet;
 		},
+		get timer() {
+			return timer;
+		},
 		get totalTime() {
 			return totalTime;
 		},
@@ -177,8 +165,6 @@ export function createRoutine() {
 		get isRunning() {
 			return isRunning;
 		},
-		start,
-		stop,
 		initiateSet,
 		initiateNextSet,
 		initiatePreviousSet

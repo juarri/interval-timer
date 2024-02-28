@@ -1,6 +1,10 @@
 <script lang="ts">
+	import { fit, parent_style } from '@leveluptuts/svelte-fit';
+
 	import { createRoutine } from '$lib/states/routine.svelte';
 	import { createToggle } from '$lib/states/toggle.svelte';
+
+	import formatDuration from '$lib/utils/formatDuration';
 
 	import {
 		ArrowLeftIcon,
@@ -14,24 +18,15 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 
 	let lock = createToggle(false);
-
 	let routine = createRoutine();
 
-	const roundedTotalTimeRemaining = $derived(
-		routine.totalTimeRemaining.round({
-			largestUnit: 'hours',
-			smallestUnit: 'seconds'
-		})
-	);
-
-	const displayTime = $derived(
-		`${roundedTotalTimeRemaining.hours && `${roundedTotalTimeRemaining.hours}:`}${roundedTotalTimeRemaining.minutes}:${roundedTotalTimeRemaining.seconds.toString().padStart(2, '0')}`
-	);
+	const totalTimeRemaining = $derived(formatDuration(routine.totalTimeRemaining));
+	const timerTimeRemaining = $derived(formatDuration(routine.timer.timeRemaining));
 </script>
 
-<main class="flex h-dvh max-h-lvh flex-col justify-between">
-	<section class="flex items-center justify-between p-6 pb-0">
-		{#if lock.isOn}
+<main class="flex h-dvh max-h-full flex-col justify-between">
+	<section class="flex items-center justify-between p-4 px-6">
+		{#if lock.isEnabled}
 			<Button onclick={lock.disable}>
 				<UnlockIcon />
 			</Button>
@@ -41,27 +36,29 @@
 			</Button>
 		{/if}
 
-		<span class="text-6xl">
-			{displayTime}
+		<span class="text-7xl">
+			{totalTimeRemaining}
 		</span>
 
-		{#if routine.isRunning}
-			<Button onclick={routine.stop} disabled={lock.isOn}>
+		{#if routine.isRunning.isEnabled}
+			<Button onclick={routine.isRunning.disable} disabled={lock.isEnabled}>
 				<PauseIcon />
 			</Button>
 		{:else}
-			<Button onclick={routine.start} disabled={lock.isOn}>
+			<Button onclick={routine.isRunning.enable} disabled={lock.isEnabled}>
 				<PlayIcon />
 			</Button>
 		{/if}
 	</section>
 
-	<section class="flex justify-center">
-		<span class="text-[35vh] leading-none">{routine.timer.amountOfTimeRemaining.seconds}</span>
+	<section class="grid w-full place-content-center" style={parent_style}>
+		<p class="text-center leading-none" use:fit={{ min_size: 3, max_size: 300 }}>
+			{timerTimeRemaining}
+		</p>
 	</section>
 
-	<section class="mx-auto w-full max-w-screen-md flex-auto overflow-auto px-6">
-		<ol class="flex list-decimal flex-col overflow-scroll">
+	<section class="mx-auto w-full max-w-2xl flex-auto overflow-auto px-6">
+		<ol class="flex flex-col">
 			{#each routine.sets as set, i}
 				<li>
 					<Button
@@ -73,12 +70,14 @@
 		</ol>
 	</section>
 
-	<section class="flex items-center justify-between p-6">
-		<Button onclick={routine.initiatePreviousSet} aria-label="Previous Set" disabled={lock.isOn}
-			><ArrowLeftIcon /></Button
+	<section class="flex items-center justify-between p-4 px-4">
+		<Button
+			onclick={routine.initiatePreviousSet}
+			aria-label="Previous Set"
+			disabled={lock.isEnabled}><ArrowLeftIcon /></Button
 		>
-		<span class="text-4xl">{routine.currentSetIndex + 1}/{routine.setsLength}</span>
-		<Button onclick={routine.initiateNextSet} aria-label="Next Set" disabled={lock.isOn}
+		<span class="text-6xl">{routine.currentSetIndex + 1}/{routine.sets.length}</span>
+		<Button onclick={routine.initiateNextSet} aria-label="Next Set" disabled={lock.isEnabled}
 			><ArrowRightIcon /></Button
 		>
 	</section>

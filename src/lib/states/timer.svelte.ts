@@ -1,61 +1,43 @@
 import { Temporal } from '@js-temporal/polyfill';
 
-export function createTimer(initialAmountOfTime: Temporal.Duration) {
-	let amountOfTime = $state(initialAmountOfTime);
-	let amountOfTimeRemaining = $state(amountOfTime);
-	let previousSecondsRemaining = $state(amountOfTimeRemaining);
+import { createToggle } from './toggle.svelte';
 
-	let isRunning = $state(false);
-	const isCompleted = $derived(amountOfTimeRemaining.blank);
+export function createTimer(initialAmountOfTime: Temporal.Duration) {
+	let time = $state(initialAmountOfTime);
+	let timeRemaining = $state(time);
+	let previousTimeRemaining = $state(timeRemaining);
+
+	const isRunning = createToggle(false);
+	const isCompleted = $derived(timeRemaining.blank);
 
 	let hasReset = $state(false);
-	let hasStarted = $state(false);
-	let hasStopped = $state(false);
+	const hasStarted = $state(false);
+	const hasStopped = $state(false);
 
 	function setAmountOfTime(newAmountOfTime: Temporal.Duration) {
-		amountOfTime = newAmountOfTime;
-		amountOfTimeRemaining = amountOfTime;
+		time = newAmountOfTime;
+		timeRemaining = time;
 	}
 
 	function decrementTimerBySecond() {
-		previousSecondsRemaining = amountOfTimeRemaining;
-		amountOfTimeRemaining = amountOfTimeRemaining.subtract({ seconds: 1 });
+		previousTimeRemaining = timeRemaining;
+		timeRemaining = timeRemaining.subtract({ seconds: 1 });
 	}
 
 	function reset() {
-		amountOfTimeRemaining = amountOfTime;
-		previousSecondsRemaining = amountOfTimeRemaining;
+		timeRemaining = time;
+		previousTimeRemaining = timeRemaining;
 
 		hasReset = true;
 	}
 
 	function complete() {
-		amountOfTimeRemaining = Temporal.Duration.from({ seconds: 0 });
-	}
-
-	function start() {
-		isRunning = true;
-		hasStarted = true;
-	}
-
-	function stop() {
-		isRunning = false;
-		hasStopped = true;
-	}
-
-	function toggle() {
-		isRunning = !isRunning;
-
-		if (isRunning) {
-			hasStarted = true;
-		} else {
-			hasStopped = true;
-		}
+		timeRemaining = Temporal.Duration.from({ seconds: 0 });
 	}
 
 	function onStart(callback: () => void) {
 		$effect(() => {
-			if (isRunning && hasStarted) {
+			if (isRunning.isEnabled && hasStarted) {
 				callback();
 			}
 		});
@@ -63,7 +45,7 @@ export function createTimer(initialAmountOfTime: Temporal.Duration) {
 
 	function onStop(callback: () => void) {
 		$effect(() => {
-			if (!isRunning && hasStopped) {
+			if (!isRunning.isEnabled && hasStopped) {
 				callback();
 			}
 		});
@@ -79,7 +61,7 @@ export function createTimer(initialAmountOfTime: Temporal.Duration) {
 
 	function onReset(callback: () => void) {
 		$effect(() => {
-			if (amountOfTimeRemaining === amountOfTime && hasReset) {
+			if (timeRemaining === time && hasReset) {
 				callback();
 			}
 		});
@@ -92,14 +74,14 @@ export function createTimer(initialAmountOfTime: Temporal.Duration) {
 		) => void
 	) {
 		$effect(() => {
-			if (amountOfTimeRemaining !== previousSecondsRemaining) {
-				callback(amountOfTimeRemaining, previousSecondsRemaining);
+			if (timeRemaining !== previousTimeRemaining) {
+				callback(timeRemaining, previousTimeRemaining);
 			}
 		});
 	}
 
 	$effect(() => {
-		if (isRunning && !amountOfTimeRemaining.blank) {
+		if (isRunning.isEnabled && !timeRemaining.blank) {
 			const interval = setInterval(decrementTimerBySecond, 1000);
 
 			return () => clearInterval(interval);
@@ -107,14 +89,11 @@ export function createTimer(initialAmountOfTime: Temporal.Duration) {
 	});
 
 	return {
-		get amountOfTime() {
-			return amountOfTime;
+		get time() {
+			return time;
 		},
-		get amountOfTimeRemaining() {
-			return amountOfTimeRemaining;
-		},
-		get timeInSeconds() {
-			return amountOfTimeRemaining;
+		get timeRemaining() {
+			return timeRemaining;
 		},
 		get isRunning() {
 			return isRunning;
@@ -123,9 +102,6 @@ export function createTimer(initialAmountOfTime: Temporal.Duration) {
 			return isCompleted;
 		},
 		setAmountOfTime,
-		start,
-		stop,
-		toggle,
 		reset,
 		complete,
 		onSecondPassed,
