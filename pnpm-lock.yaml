@@ -8,6 +8,9 @@ dependencies:
   '@js-temporal/polyfill':
     specifier: ^0.4.4
     version: 0.4.4
+  '@leveluptuts/svelte-fit':
+    specifier: ^1.0.3
+    version: 1.0.3
   bits-ui:
     specifier: ^0.17.0
     version: 0.17.0(svelte@5.0.0-next.52)
@@ -446,6 +449,10 @@ packages:
     dependencies:
       jsbi: 4.3.0
       tslib: 2.6.2
+    dev: false
+
+  /@leveluptuts/svelte-fit@1.0.3:
+    resolution: {integrity: sha512-Hg8Xz06Mf1pwI92cY60LdFKDjXUkix0KcNP5orgGjtV7ecfK4zZ8gwPHOSDioZt73/7Muj1O43QzvtK2oPwEfA==}
     dev: false
 
   /@melt-ui/svelte@0.71.2(svelte@5.0.0-next.52):
@@ -971,7 +978,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001591
-      electron-to-chromium: 1.4.685
+      electron-to-chromium: 1.4.686
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.23.0)
     dev: true
@@ -1112,8 +1119,8 @@ packages:
   /eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  /electron-to-chromium@1.4.685:
-    resolution: {integrity: sha512-yDYeobbTEe4TNooEzOQO6xFqg9XnAkVy2Lod1C1B2it8u47JNLYvl9nLDWBamqUakWB8Jc1hhS1uHUNYTNQdfw==}
+  /electron-to-chromium@1.4.686:
+    resolution: {integrity: sha512-3avY1B+vUzNxEgkBDpKOP8WarvUAEwpRaiCL0He5OKWEFxzaOFiq4WoZEZe7qh0ReS7DiWoHMnYoQCKxNZNzSg==}
     dev: true
 
   /emoji-regex@8.0.0:

@@ -38,6 +38,7 @@
 	"type": "module",
 	"dependencies": {
 		"@js-temporal/polyfill": "^0.4.4",
+		"@leveluptuts/svelte-fit": "^1.0.3",
 		"bits-ui": "^0.17.0",
 		"clsx": "^2.1.0",
 		"lucide-svelte": "^0.323.0",
