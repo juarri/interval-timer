@@ -35,6 +35,8 @@ export function createRoutine() {
 		}
 	]);
 
+	const setsLength = $derived(sets.length);
+
 	const timer = createTimer(Temporal.Duration.from({ seconds: sets[0].time.seconds }));
 
 	const firstSetIndex = $state(0);
@@ -42,8 +44,6 @@ export function createRoutine() {
 
 	const lastSetIndex = $state(sets.length - 1);
 	const lastSet = $derived(sets[lastSetIndex]);
-
-	const totalAmountOfSets = $derived(sets.length);
 
 	let isRunning = $state(false);
 
@@ -96,6 +96,13 @@ export function createRoutine() {
 		timer.setAmountOfTime(currentSet.time);
 	}
 
+	function initiateSet(index: number) {
+		if (index < firstSetIndex || index > lastSetIndex) return;
+
+		currentSetIndex = index;
+		timer.setAmountOfTime(currentSet.time);
+	}
+
 	const totalTime = $derived(
 		sets.reduce((acc, set) => acc.add(set.time), Temporal.Duration.from({ seconds: 0 }))
 	);
@@ -137,8 +144,8 @@ export function createRoutine() {
 		get sets() {
 			return sets;
 		},
-		get totalAmountOfSets() {
-			return totalAmountOfSets;
+		get setsLength() {
+			return setsLength;
 		},
 		get timer() {
 			return timer;
@@ -172,6 +179,7 @@ export function createRoutine() {
 		},
 		start,
 		stop,
+		initiateSet,
 		initiateNextSet,
 		initiatePreviousSet
 	};
