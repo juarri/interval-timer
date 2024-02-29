@@ -7,15 +7,19 @@ function formatDuration(duration: Temporal.Duration): string {
 	const minutes = roundedDuration.minutes;
 	const seconds = roundedDuration.seconds;
 
+	const formattedHours = hours.toString().padStart(2, '0');
+	const formattedMinutes = minutes.toString().padStart(2, '0');
+	const formattedSeconds = seconds.toString();
+
 	if (hours > 0) {
-		return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+		return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 	}
 
 	if (minutes > 0) {
-		return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+		return `${formattedHours}:${formattedSeconds}`;
 	}
 
-	return `${seconds.toString()}`;
+	return `${formattedSeconds}`;
 }
 
 export default formatDuration;
