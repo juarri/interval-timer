@@ -9,7 +9,7 @@ function formatDuration(duration: Temporal.Duration): string {
 
 	const formattedHours = hours.toString().padStart(2, '0');
 	const formattedMinutes = minutes.toString().padStart(2, '0');
-	const formattedSeconds = seconds === 0 ? seconds.toString().padStart(2, '0') : seconds.toString();
+	const formattedSeconds = seconds.toString().padStart(2, '0');
 
 	if (hours > 0) {
 		return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
@@ -19,7 +19,7 @@ function formatDuration(duration: Temporal.Duration): string {
 		return `${formattedMinutes}:${formattedSeconds}`;
 	}
 
-	return `${formattedSeconds}`;
+	return `${seconds}`;
 }
 
 export default formatDuration;
