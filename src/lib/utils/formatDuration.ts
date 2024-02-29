@@ -16,7 +16,7 @@ function formatDuration(duration: Temporal.Duration): string {
 	}
 
 	if (minutes > 0) {
-		return `${formattedHours}:${formattedSeconds}`;
+		return `${formattedMinutes}:${formattedSeconds}`;
 	}
 
 	return `${formattedSeconds}`;
