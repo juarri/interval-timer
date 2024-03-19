@@ -1,6 +1,6 @@
 import type { Temporal } from '@js-temporal/polyfill';
 
-function formatDuration(duration: Temporal.Duration): string {
+function timerDuration(duration: Temporal.Duration): string {
 	const roundedDuration = duration.round({ smallestUnit: 'second', largestUnit: 'hour' });
 
 	const hours = roundedDuration.hours;
@@ -21,4 +21,4 @@ function formatDuration(duration: Temporal.Duration): string {
 	return `${seconds}`;
 }
 
-export default formatDuration;
+export default timerDuration;

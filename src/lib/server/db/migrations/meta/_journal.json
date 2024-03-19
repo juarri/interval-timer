@@ -1,0 +1,48 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1710286118658,
+      "tag": "0000_charming_punisher",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1710306519612,
+      "tag": "0001_odd_hannibal_king",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1710341778646,
+      "tag": "0002_handy_vertigo",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1710354796125,
+      "tag": "0003_friendly_swarm",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1710373465987,
+      "tag": "0004_dry_blacklash",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1710391045861,
+      "tag": "0005_violet_justice",
+      "breakpoints": true
+    }
+  ]
+}

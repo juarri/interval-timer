@@ -1,37 +1,35 @@
-<script>
-	// import { Button } from '$lib/components/ui/button';
+<script lang="ts">
+	import type { PageData } from './$types';
 
-	let timers = $state([
-		{ id: 1, name: 'Timer 1' },
-		{ id: 2, name: 'Timer 2' },
-		{ id: 3, name: 'Timer 3' },
-		{ id: 4, name: 'Timer 4' },
-		{ id: 5, name: 'Timer 5' }
-	]);
+	export let data: PageData;
 </script>
 
-<main>
-	<section>
-		<div class="container mx-auto">
-			<h1>Timers</h1>
+<h1 class="sr-only">Timers</h1>
 
-			<ul class="flex flex-col gap-8">
-				{#each timers as timer}
-					<a href="/timers/{timer.id}" aria-label={timer.name}
-						><li class="rounded bg-slate-300 px-6 py-9">
-							<h2 class="text-xl font-bold">{timer.name}</h2>
-							<div class="mb-6" />
+<main>
+	<section class="container flex h-14 max-w-screen-2xl items-center">
+		{#if data.intervalTimers}
+			<ul class="flex flex-col gap-2">
+				{#each data.intervalTimers as timer}
+					<li class="rounded bg-slate-200">
+						<a
+							href="/timers/{timer.id}"
+							aria-label={timer.title}
+							class="block h-full w-full px-4 py-4"
+						>
+							<h2 class="mb-4 text-lg font-bold">{timer.title}</h2>
 							<ul class="text-slate-700">
-								<li>Prepare: 15 sec</li>
-								<li>Work: 30 sec</li>
-								<li>Rest 10 sec</li>
-								<li>Cycles: 45</li>
+								<li>Prepare: {timer.preparationTime}s</li>
+								<li>Go: {timer.goTime}s</li>
+								<li>Stop {timer.stopTime}s</li>
+								<li>Cooldown {timer.cooldownTime}s</li>
+								<li>Intervals: {timer.intervals}</li>
 								<li>Total: 30:05 - 90 intervals</li>
 							</ul>
-						</li></a
-					>
+						</a>
+					</li>
 				{/each}
 			</ul>
-		</div>
+		{/if}
 	</section>
 </main>

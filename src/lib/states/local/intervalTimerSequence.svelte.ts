@@ -1,64 +1,58 @@
 import { Temporal } from '@js-temporal/polyfill';
 
-import { createTimer } from './timer.svelte';
-import { createToggle } from './toggle.svelte';
+import { createTimer } from '$lib/states/local/timer.svelte';
+import { createToggle } from '$lib/states/local/toggle.svelte';
+import { timerDuration } from '$lib/utils/duration';
 
-export function createRoutine() {
-	const sets = $state([
+import type { IntervalTimer } from '$lib/server/db/schema';
+
+export function createIntervalTimerSequence(intervalTimer: IntervalTimer | undefined) {
+	if (!intervalTimer) {
+		throw new Error('Interval timer is undefined');
+	}
+
+	const sequence = $state([
 		{
-			name: 'Work',
-			time: Temporal.Duration.from({ hours: 2, minutes: 30, seconds: 17 })
+			name: 'Preparation',
+			time: Temporal.Duration.from({ seconds: intervalTimer.preparationTime })
 		},
-		{ name: 'Rest', time: Temporal.Duration.from({ minutes: 15, seconds: 10 }) },
+		...Array.from({ length: intervalTimer.intervals * 2 - 1 }, (_, i) =>
+			i % 2
+				? { name: 'Go', time: Temporal.Duration.from({ seconds: intervalTimer.goTime }) }
+				: { name: 'Stop', time: Temporal.Duration.from({ seconds: intervalTimer.stopTime }) }
+		),
 		{
-			name: 'Work',
-			time: Temporal.Duration.from({ seconds: 30 })
-		},
-		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 10 }) },
-		{
-			name: 'Work',
-			time: Temporal.Duration.from({ seconds: 30 })
-		},
-		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 10 }) },
-		{
-			name: 'Work',
-			time: Temporal.Duration.from({ seconds: 30 })
-		},
-		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 10 }) },
-		{
-			name: 'Work',
-			time: Temporal.Duration.from({ seconds: 30 })
-		},
-		{ name: 'Rest', time: Temporal.Duration.from({ seconds: 10 }) },
-		{
-			name: 'Work',
-			time: Temporal.Duration.from({ seconds: 30 })
+			name: 'Cooldown',
+			time: Temporal.Duration.from({ seconds: intervalTimer.cooldownTime })
 		}
 	]);
 
 	const firstSetIndex = $state(0);
-	const firstSet = $derived(sets[firstSetIndex]);
+	const firstSet = $derived(sequence[firstSetIndex]);
 
-	const lastSetIndex = $state(sets.length - 1);
-	const lastSet = $derived(sets[lastSetIndex]);
+	const lastSetIndex = $state(sequence.length - 1);
+	const lastSet = $derived(sequence[lastSetIndex]);
 
 	let currentSetIndex = $state(firstSetIndex);
-	const currentSet = $derived(sets[currentSetIndex]);
+	const currentSet = $derived(sequence[currentSetIndex]);
 
 	const timer = createTimer(currentSet.time);
 
 	const isRunning = createToggle(false);
 
 	const totalTime = $derived(
-		sets.reduce((acc, set) => acc.add(set.time), Temporal.Duration.from({ seconds: 0 }))
+		sequence.reduce((acc, set) => acc.add(set.time), Temporal.Duration.from({ seconds: 0 }))
 	);
 
 	const totalTimeRemaining = $derived(
-		sets
+		sequence
 			.slice(currentSetIndex + 1)
 			.reduce((acc, set) => acc.add(set.time), Temporal.Duration.from({ seconds: 0 }))
 			.add(timer.timeRemaining)
 	);
+
+	const displayTotalTimeRemaining = $derived(timerDuration(totalTimeRemaining));
+	const displayTimerTimeRemaining = $derived(timerDuration(timer.timeRemaining));
 
 	function decrementCurrentSetIndex() {
 		if (currentSetIndex === firstSetIndex) return;
@@ -133,7 +127,7 @@ export function createRoutine() {
 
 	return {
 		get sets() {
-			return sets;
+			return sequence;
 		},
 		get currentSetIndex() {
 			return currentSetIndex;
@@ -164,6 +158,12 @@ export function createRoutine() {
 		},
 		get isRunning() {
 			return isRunning;
+		},
+		get displayTotalTimeRemaining() {
+			return displayTotalTimeRemaining;
+		},
+		get displayTimerTimeRemaining() {
+			return displayTimerTimeRemaining;
 		},
 		initiateSet,
 		initiateNextSet,
