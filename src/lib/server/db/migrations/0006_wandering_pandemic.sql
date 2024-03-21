@@ -1,0 +1,1 @@
+ALTER TABLE interval_timer ADD `description` text NOT NULL;

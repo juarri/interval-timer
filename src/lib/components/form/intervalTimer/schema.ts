@@ -1,7 +1,8 @@
 import z from 'zod';
 
-export const formSchema = z.object({
-	title: z.string(),
+export const schema = z.object({
+	title: z.string().min(1).max(31),
+	description: z.string().max(255).optional(),
 	preparationTime: z.object({
 		hours: z.number().int().min(0).max(23),
 		minutes: z.number().int().min(0).max(59),
@@ -22,7 +23,7 @@ export const formSchema = z.object({
 		minutes: z.number().int().min(0).max(59),
 		seconds: z.number().int().min(0).max(59)
 	}),
-	intervals: z.number().int().min(1).default(1)
+	intervals: z.number().int().min(1)
 });
 
-export type FormSchema = z.infer<typeof formSchema>;
+export type Schema = z.infer<typeof schema>;

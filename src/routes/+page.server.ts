@@ -1,24 +1,26 @@
 import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/db';
-import { intervalTimerTable } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+
+import { intervalTimerFormSchema } from '$lib/components/form/intervalTimer';
+import { getIntervalTimersByUserId } from '$lib/server/db/data/intervalTimer';
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user;
+	const form = await superValidate(zod(intervalTimerFormSchema));
 
 	if (user) {
-		const intervalTimers = await db.query.intervalTimerTable.findMany({
-			where: eq(intervalTimerTable.userId, user.id)
-		});
+		const intervalTimers = await getIntervalTimersByUserId(user.id);
 
 		return {
-			user,
-			intervalTimers
+			intervalTimers,
+			form
 		};
 	}
 
 	return {
-		user: null,
-		intervalTimers: []
+		intervalTimers: [],
+		form
 	};
 };

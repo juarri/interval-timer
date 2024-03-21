@@ -5,16 +5,20 @@ function readableDuration(seconds: number): string {
 	const duration = [];
 
 	if (hours > 0) {
-		duration.push(`${hours} hour${hours > 1 ? 's' : ''}`);
+		duration.push(`${hours}h`);
 	}
 	if (minutes > 0) {
-		duration.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
+		duration.push(`${minutes}m`);
 	}
 	if (remainingSeconds > 0) {
-		duration.push(`${remainingSeconds} second${remainingSeconds > 1 ? 's' : ''}`);
+		duration.push(`${remainingSeconds}s`);
 	}
 
-	return duration.join(', ');
+	if (duration.length === 0) {
+		return '0s';
+	}
+
+	return duration.join(' ');
 }
 
 export default readableDuration;

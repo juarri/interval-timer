@@ -1,11 +1,10 @@
 <script lang="ts">
+	import { CreateIntervalTimerForm } from '$lib/components/form/intervalTimer';
+
 	import type { PageData } from './$types';
-
-	import Form from './form.svelte';
-
 	export let data: PageData;
-
-	// let { form } = $props<PageData>();
 </script>
 
-<Form schema={data.form} />
+<h1>Kappa</h1>
+
+<CreateIntervalTimerForm schema={data.form} />

@@ -39,7 +39,7 @@
 	// const timerTimeRemaining = $derived(timerDuration(sequence.timer.timeRemaining));
 </script>
 
-<main class="flex flex-col justify-between" style="height: calc(100dvh - 56px);">
+<main class="flex flex-col justify-between" style="height:  calc(100dvh - 56px);">
 	<section>
 		<div class="container flex max-w-screen-2xl items-center justify-between">
 			{#if lock.isEnabled}
@@ -94,7 +94,7 @@
 							variant="outline"
 							class={cn([
 								'relative h-full w-full rounded p-4 text-center text-2xl focus:z-10',
-								sequence.currentSetIndex === i && 'bg-neutral-700'
+								sequence.currentSetIndex === i && 'bg-neutral-300 dark:bg-neutral-700'
 							])}
 							disabled={lock.isEnabled}>{i + 1}. {set.name}</Button
 						>
