@@ -32,7 +32,7 @@
 
 <div class="h-full">
 	<section
-		class="sticky top-14 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+		class="sticky top-14 z-50 w-full border-b border-border/40 bg-background/95 pt-4 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 	>
 		<div class="container flex max-w-screen-2xl flex-col items-center justify-between">
 			{#key intervalTimerSequence.displayTotalTimeRemaining}
