@@ -2,7 +2,13 @@ import type { PageServerLoad } from './$types';
 
 import { getIntervalTimerById } from '$lib/server/db/data/intervalTimer';
 
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { intervalTimerFormSchema as zIntervalTimerFormSchema } from '$lib/components/form/intervalTimer';
+
 export const load: PageServerLoad = async (event) => {
+	const intervalTimerFormSchema = await superValidate(zod(zIntervalTimerFormSchema));
+
 	const user = event.locals.user;
 	if (!user) {
 		return {
@@ -28,6 +34,7 @@ export const load: PageServerLoad = async (event) => {
 	}
 
 	return {
+		intervalTimerFormSchema,
 		intervalTimer
 	};
 };

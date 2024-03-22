@@ -25,3 +25,5 @@ export function createToggle(initialState: boolean) {
 		disable
 	};
 }
+
+export type Toggle = ReturnType<typeof createToggle>;

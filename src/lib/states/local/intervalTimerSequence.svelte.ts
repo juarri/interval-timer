@@ -6,20 +6,16 @@ import { timerDuration } from '$lib/utils/duration';
 
 import type { IntervalTimer } from '$lib/server/db/schema';
 
-export function createIntervalTimerSequence(intervalTimer: IntervalTimer | undefined) {
-	if (!intervalTimer) {
-		throw new Error('Interval timer is undefined');
-	}
-
+export function createIntervalTimerSequence(intervalTimer: IntervalTimer) {
 	const sequence = $state([
 		{
-			name: 'Preparation',
+			name: 'Prep',
 			time: Temporal.Duration.from({ seconds: intervalTimer.preparationTime })
 		},
 		...Array.from({ length: intervalTimer.intervals * 2 - 1 }, (_, i) =>
 			i % 2
-				? { name: 'Go', time: Temporal.Duration.from({ seconds: intervalTimer.goTime }) }
-				: { name: 'Stop', time: Temporal.Duration.from({ seconds: intervalTimer.stopTime }) }
+				? { name: 'Stop', time: Temporal.Duration.from({ seconds: intervalTimer.stopTime }) }
+				: { name: 'Go', time: Temporal.Duration.from({ seconds: intervalTimer.goTime }) }
 		),
 		{
 			name: 'Cooldown',
@@ -170,3 +166,5 @@ export function createIntervalTimerSequence(intervalTimer: IntervalTimer | undef
 		initiatePreviousSet
 	};
 }
+
+export type IntervalTimerSequence = ReturnType<typeof createIntervalTimerSequence>;
