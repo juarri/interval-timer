@@ -6,7 +6,12 @@
 	import { Input } from '$lib/components/ui/input';
 	import { toast } from 'svelte-sonner';
 
-	import type { IntervalTimerFormSchema } from '$lib/components/form/intervalTimer/';
+	import {
+		durationFieldSets,
+		type IntervalTimerFormSchema
+	} from '$lib/components/form/intervalTimer/';
+
+	import { currentTime } from '$lib/utils/time';
 
 	type Props = {
 		schema: SuperValidated<IntervalTimerFormSchema>;
@@ -14,48 +19,20 @@
 
 	let { schema }: Props = $props();
 
-	function currentTime() {
-		const now = Date.now();
-		const formatter = new Intl.DateTimeFormat('en-US', {
-			weekday: 'long',
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: 'numeric',
-			hour12: true
-		});
-		return formatter.format(now);
-	}
-
 	const form = superForm(schema, {
 		dataType: 'json',
 		onUpdated({ form }) {
 			if (form.valid) {
 				formData.set(form.data);
 
-				toast.success('Timer has been updated.', {
-					description: currentTime(),
-					action: {
-						label: 'Undo',
-						onClick: () => {}
-					}
+				toast.success('Timer has been created.', {
+					description: currentTime()
 				});
 			}
 		}
 	});
 
 	const { form: formData, constraints, enhance } = form;
-
-	type formFields = 'preparationTime' | 'goTime' | 'stopTime' | 'cooldownTime';
-	type formFieldSet = { label: string; value: formFields };
-
-	const durationFieldSets: formFieldSet[] = [
-		{ label: 'Preparation', value: 'preparationTime' },
-		{ label: 'Work', value: 'goTime' },
-		{ label: 'Rest', value: 'stopTime' },
-		{ label: 'Cooldown', value: 'cooldownTime' }
-	];
 </script>
 
 <form

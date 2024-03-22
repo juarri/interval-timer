@@ -12,6 +12,10 @@
 	export let data: PageData;
 </script>
 
+<svelte:head>
+	<title>Interval Timers</title>
+</svelte:head>
+
 <ModeWatcher />
 
 <Toaster />

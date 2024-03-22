@@ -5,7 +5,7 @@
 
 	import { UpdateIntervalTimerForm } from '$lib/components/form/intervalTimer';
 
-	import { Icon, Cog6Tooth, Trash } from 'svelte-hero-icons';
+	import { Icon, Cog6Tooth, XMark } from 'svelte-hero-icons';
 
 	import { readableDuration } from '$lib/utils/duration';
 
@@ -75,28 +75,20 @@
 							>
 							<AlertDialog.Root closeOnOutsideClick={true}>
 								<AlertDialog.Trigger asChild let:builder>
-									<Button builders={[builder]} variant="outline"><Icon src={Cog6Tooth} /></Button>
+									<Button aria-label="Timer Settings" builders={[builder]} variant="outline"
+										><Icon src={Cog6Tooth} /></Button
+									>
 								</AlertDialog.Trigger>
 								<AlertDialog.Content>
 									<AlertDialog.Header>
-										<AlertDialog.Title>Update Timer</AlertDialog.Title>
+										<div class="flex items-center justify-between">
+											<AlertDialog.Title>Update Timer</AlertDialog.Title>
+											<AlertDialog.Cancel aria-label="Close Dialog"
+												><Icon src={XMark} /></AlertDialog.Cancel
+											>
+										</div>
 									</AlertDialog.Header>
 									<UpdateIntervalTimerForm schema={data.form} initialData={intervalTimer} />
-									<AlertDialog.Footer class="flex w-full justify-between">
-										<AlertDialog.Action
-											form="update-interval-timer-form"
-											formaction="/timers?/deleteIntervalTimer&id={intervalTimer.id}"
-											type="button"
-										>
-											<Icon src={Trash} />
-										</AlertDialog.Action>
-										<div>
-											<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-											<AlertDialog.Action form="update-interval-timer-form" type="submit"
-												>Update
-											</AlertDialog.Action>
-										</div>
-									</AlertDialog.Footer>
 								</AlertDialog.Content>
 							</AlertDialog.Root>
 						</Card.Footer>

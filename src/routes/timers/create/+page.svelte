@@ -5,6 +5,4 @@
 	export let data: PageData;
 </script>
 
-<h1>Kappa</h1>
-
 <CreateIntervalTimerForm schema={data.form} />

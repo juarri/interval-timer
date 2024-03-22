@@ -6,11 +6,16 @@
 	import { Input } from '$lib/components/ui/input';
 	import { toast } from 'svelte-sonner';
 
-	import type { IntervalTimerFormSchema } from '$lib/components/form/intervalTimer/';
+	import {
+		durationFieldSets,
+		type IntervalTimerFormSchema
+	} from '$lib/components/form/intervalTimer/';
 	import type { IntervalTimer } from '$lib/server/db/schema';
 
 	import { secondsToDuration } from '$lib/utils/duration';
 	import { Icon, Trash } from 'svelte-hero-icons';
+
+	import { currentTime } from '$lib/utils/time';
 
 	type Props = {
 		schema: SuperValidated<IntervalTimerFormSchema>;
@@ -19,20 +24,6 @@
 
 	let { schema, initialData }: Props = $props();
 
-	function currentTime() {
-		const now = Date.now();
-		const formatter = new Intl.DateTimeFormat('en-US', {
-			weekday: 'long',
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: 'numeric',
-			hour12: true
-		});
-		return formatter.format(now);
-	}
-
 	const form = superForm(schema, {
 		dataType: 'json',
 		onUpdated({ form }) {
@@ -40,11 +31,7 @@
 				formData.set(form.data);
 
 				toast.success('Timer has been updated.', {
-					description: currentTime(),
-					action: {
-						label: 'Undo',
-						onClick: () => {}
-					}
+					description: currentTime()
 				});
 			}
 		}
@@ -77,16 +64,6 @@
 		},
 		intervals: initialData.intervals
 	});
-
-	type formFields = 'preparationTime' | 'goTime' | 'stopTime' | 'cooldownTime';
-	type formFieldSet = { label: string; value: formFields };
-
-	const durationFieldSets: formFieldSet[] = [
-		{ label: 'Preparation', value: 'preparationTime' },
-		{ label: 'Work', value: 'goTime' },
-		{ label: 'Rest', value: 'stopTime' },
-		{ label: 'Cooldown', value: 'cooldownTime' }
-	];
 </script>
 
 <form
@@ -204,10 +181,12 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<!-- <div class="mt-4 flex justify-between"> -->
-	<!-- 	<Form.Button type="submit">Update</Form.Button> -->
-	<!-- 	<Form.Button formaction="/timers?/deleteIntervalTimer&id={initialData.id}" variant="destructive" -->
-	<!-- 		><Icon src={Trash} /></Form.Button -->
-	<!-- 	> -->
-	<!-- </div> -->
+	<div class="mt-4 flex justify-between">
+		<Form.Button type="submit">Update</Form.Button>
+		<Form.Button
+			aria-label="Delete Timer"
+			formaction="/timers?/deleteIntervalTimer&id={initialData.id}"
+			variant="destructive"><Icon src={Trash} /></Form.Button
+		>
+	</div>
 </form>

@@ -101,9 +101,15 @@ export const actions = {
 			return fail(400, { missing: true });
 		}
 
+		const form = await superValidate(event.request, zod(intervalTimerFormSchema));
+
+		if (!form.valid) {
+			return fail(400, { form });
+		}
+
 		try {
 			await deleteIntervalTimer(id, user.id);
-			return { success: true };
+			return message(form, 'Form posted successfully!');
 		} catch (e) {
 			return fail(500, { error: e });
 		}
