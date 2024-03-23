@@ -5,7 +5,7 @@ function secondsToDuration(seconds: number) {
 		throw new Error('seconds must be a positive number');
 	}
 
-	return Temporal.Duration.from({ seconds });
+	return Temporal.Duration.from({ seconds }).round({ largestUnit: 'hours' });
 }
 
 export default secondsToDuration;

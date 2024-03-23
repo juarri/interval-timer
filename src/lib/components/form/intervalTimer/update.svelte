@@ -31,7 +31,8 @@
 				formData.set(form.data);
 
 				toast.success('Timer has been updated.', {
-					description: currentTime()
+					description: currentTime(),
+					dismissable: true
 				});
 			}
 		}
