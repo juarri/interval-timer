@@ -8,9 +8,7 @@ import { sessionTable, userTable } from './db/schema';
 
 const adapter = new DrizzleSQLiteAdapter(db, sessionTable, userTable);
 
-const baseUrl = process.env.VERCEL_URL
-	? `https://${process.env.VERCEL_URL}`
-	: 'http://localhost:5173';
+const baseUrl = process.env.URL ? `https://${process.env.URL}` : 'http://localhost:5173';
 
 const redirectUrl = `${baseUrl}/auth/callback/google`;
 
