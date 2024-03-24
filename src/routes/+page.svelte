@@ -8,6 +8,7 @@
 	import { Icon, Cog6Tooth, XMark } from 'svelte-hero-icons';
 
 	import { readableDuration } from '$lib/utils/duration';
+	import { calculateTotalRoutineTime } from '$lib/utils/intervalTimer';
 
 	import type { PageData } from './$types';
 	export let data: PageData;
@@ -18,10 +19,7 @@
 		<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 			{#if data.intervalTimers}
 				{#each data.intervalTimers as intervalTimer}
-					{@const totalTime =
-						intervalTimer.preparationTime +
-						(intervalTimer.goTime + intervalTimer.stopTime) * 2 +
-						intervalTimer.cooldownTime}
+					{@const totalTime = calculateTotalRoutineTime(intervalTimer)}
 
 					{@const labels = [
 						{
