@@ -25,7 +25,7 @@
 <svelte:head>
 	<title
 		>{intervalTimerSequence.displayTimerTimeRemaining} - {intervalTimerSequence.currentSet.name} - {data
-			.intervalTimer?.title}</title
+			.intervalTimer?.title} - Interval Timers</title
 	>
 </svelte:head>
 
