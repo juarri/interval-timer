@@ -1,6 +1,9 @@
 import type { PageServerLoad } from './$types';
 
-import { getIntervalTimerById } from '$lib/server/db/data/intervalTimer';
+import {
+	getIntervalTimerById,
+	intervalTimerUpdateAccessedAt
+} from '$lib/server/db/data/intervalTimer';
 
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -32,6 +35,8 @@ export const load: PageServerLoad = async (event) => {
 			error: new Error('Forbidden')
 		};
 	}
+
+	intervalTimerUpdateAccessedAt(routeId, user.id);
 
 	return {
 		intervalTimerFormSchema,

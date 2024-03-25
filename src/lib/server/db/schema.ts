@@ -36,6 +36,10 @@ export const intervalTimerTable = sqliteTable('interval_timer', {
 	updatedAt: text('updated_at')
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
+	accessedAt: text('accessed_at')
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
+	pinned: integer('pinned', { mode: 'boolean' }).notNull().default(false),
 	title: text('title').notNull(),
 	description: text('description').notNull(),
 	preparationTime: integer('preparation_time').notNull(),
