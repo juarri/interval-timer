@@ -14,6 +14,10 @@
 	export let data: PageData;
 </script>
 
+<svelte:head>
+	<title>Interval Timers</title>
+</svelte:head>
+
 <section class="relative mt-8 h-full">
 	<div class="mx-auto px-8">
 		<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
