@@ -38,7 +38,7 @@ export const updateIntervalTimer = async (
 ) => {
 	return db
 		.update(intervalTimerTable)
-		.set({ ...intervalTimer, updatedAt: sql`CURRENT_TIMESTAMP` })
+		.set(intervalTimer)
 		.where(and(eq(intervalTimerTable.id, id), eq(intervalTimerTable.userId, userId)));
 };
 
@@ -52,5 +52,12 @@ export const intervalTimerUpdateAccessedAt = async (id: string, userId: string) 
 	return db
 		.update(intervalTimerTable)
 		.set({ accessedAt: sql`CURRENT_TIMESTAMP` })
+		.where(and(eq(intervalTimerTable.id, id), eq(intervalTimerTable.userId, userId)));
+};
+
+export const intervalTimerUpdateUpdatedAt = async (id: string, userId: string) => {
+	return db
+		.update(intervalTimerTable)
+		.set({ updatedAt: sql`CURRENT_TIMESTAMP` })
 		.where(and(eq(intervalTimerTable.id, id), eq(intervalTimerTable.userId, userId)));
 };

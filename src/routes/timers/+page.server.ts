@@ -4,8 +4,11 @@ import {
 	getIntervalTimersByUserId,
 	createIntervalTimer,
 	updateIntervalTimer,
-	deleteIntervalTimer
+	deleteIntervalTimer,
+	intervalTimerUpdateUpdatedAt
 } from '$lib/server/db/data/intervalTimer';
+
+import * as intervalTimer from '$lib/server/db/data/intervalTimer';
 
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -85,6 +88,8 @@ export const actions = {
 			cooldownTime: durationToSeconds(form.data.cooldownTime),
 			intervals: form.data.intervals
 		});
+
+		intervalTimer.intervalTimerUpdateUpdatedAt(id, user.id);
 
 		return message(form, 'Form posted successfully!');
 	},
