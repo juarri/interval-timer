@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { fail, type Actions } from '@sveltejs/kit';
+import { fail, type Actions, redirect } from '@sveltejs/kit';
 import {
 	getIntervalTimersByUserId,
 	createIntervalTimer,
@@ -7,8 +7,6 @@ import {
 	deleteIntervalTimer,
 	intervalTimerUpdateUpdatedAt
 } from '$lib/server/db/data/intervalTimer';
-
-import * as intervalTimer from '$lib/server/db/data/intervalTimer';
 
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -46,7 +44,7 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		await createIntervalTimer({
+		const createdInterval = await createIntervalTimer({
 			id: generateId(20),
 			userId: user.id,
 			title: form.data.title,
@@ -58,7 +56,9 @@ export const actions = {
 			intervals: form.data.intervals
 		});
 
-		return message(form, 'Form posted successfully!');
+		redirect(300, `/timers/${createdInterval.id}`);
+
+		return message(form, 'Interval Timer created successfully!');
 	},
 	updateIntervalTimer: async (event) => {
 		const id = event.url.searchParams.get('id');
@@ -79,7 +79,7 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		await updateIntervalTimer(id, user.id, {
+		const updatedIntervalTimer = await updateIntervalTimer(id, user.id, {
 			title: form.data.title,
 			description: form.data.description,
 			preparationTime: durationToSeconds(form.data.preparationTime),
@@ -89,9 +89,9 @@ export const actions = {
 			intervals: form.data.intervals
 		});
 
-		intervalTimer.intervalTimerUpdateUpdatedAt(id, user.id);
+		intervalTimerUpdateUpdatedAt(updatedIntervalTimer.id, user.id);
 
-		return message(form, 'Form posted successfully!');
+		return message(form, 'Interval Timer updated successfully!');
 	},
 	deleteIntervalTimer: async (event) => {
 		const user = event.locals.user;
@@ -114,7 +114,7 @@ export const actions = {
 
 		try {
 			await deleteIntervalTimer(id, user.id);
-			return message(form, 'Form posted successfully!');
+			return message(form, 'Interval Timer deleted successfully!');
 		} catch (e) {
 			return fail(500, { error: e });
 		}

@@ -28,7 +28,12 @@ export const getIntervalTimersByUserId = async (
 };
 
 export const createIntervalTimer = async (intervalTimer: NewIntervalTimer) => {
-	return db.insert(intervalTimerTable).values(intervalTimer).returning();
+	const [createdIntervalTimer] = await db
+		.insert(intervalTimerTable)
+		.values(intervalTimer)
+		.returning();
+
+	return createdIntervalTimer;
 };
 
 export const updateIntervalTimer = async (
@@ -36,10 +41,13 @@ export const updateIntervalTimer = async (
 	userId: string,
 	intervalTimer: Partial<NewIntervalTimer>
 ) => {
-	return db
+	const [updatedIntervalTimer] = await db
 		.update(intervalTimerTable)
 		.set(intervalTimer)
-		.where(and(eq(intervalTimerTable.id, id), eq(intervalTimerTable.userId, userId)));
+		.where(and(eq(intervalTimerTable.id, id), eq(intervalTimerTable.userId, userId)))
+		.returning();
+
+	return updatedIntervalTimer;
 };
 
 export const deleteIntervalTimer = async (id: string, userId: string) => {

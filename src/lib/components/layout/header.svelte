@@ -12,31 +12,24 @@
 
 	export let user: User | null;
 
-	const navItems = [
-		{
-			name: 'Create',
-			href: '/timers/create'
-		}
-	];
+	// const navItems = [];
 </script>
 
-<header
-	class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
->
+<header class="sticky top-0 z-50 w-full border-b bg-background">
 	<div class="container flex h-14 max-w-screen-2xl items-center justify-between">
 		<div class="mr-4 hidden md:flex">
 			<a href="/" class="mr-6 flex items-center space-x-2">
 				<div class="hidden sm:block"><Logo /></div>
 			</a>
 
-			<nav class="flex items-center gap-6 text-sm">
-				{#each navItems as navItem}
-					<a
-						href={navItem.href}
-						class="text-foreground/60 transition-colors hover:text-foreground/80">{navItem.name}</a
-					>
-				{/each}
-			</nav>
+			<!-- <nav class="flex items-center gap-6 text-sm"> -->
+			<!-- 	{#each navItems as navItem} -->
+			<!-- 		<a -->
+			<!-- 			href={navItem.href} -->
+			<!-- 			class="text-foreground/60 transition-colors hover:text-foreground/80">{navItem.name}</a -->
+			<!-- 		> -->
+			<!-- 	{/each} -->
+			<!-- </nav> -->
 		</div>
 
 		<Sheet.Root>

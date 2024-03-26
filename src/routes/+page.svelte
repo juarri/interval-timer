@@ -3,9 +3,12 @@
 	import * as Card from '$lib/components/ui/card';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 
-	import { UpdateIntervalTimerForm } from '$lib/components/form/intervalTimer';
+	import {
+		UpdateIntervalTimerForm,
+		CreateIntervalTimerForm
+	} from '$lib/components/form/intervalTimer';
 
-	import { Icon, Cog6Tooth, XMark } from 'svelte-hero-icons';
+	import { Icon, Cog6Tooth, XMark, Plus } from 'svelte-hero-icons';
 
 	import { readableDuration } from '$lib/utils/duration';
 	import { calculateTotalRoutineTime } from '$lib/utils/intervalTimer';
@@ -20,6 +23,25 @@
 
 <section class="relative mt-8 h-full">
 	<div class="mx-auto px-8">
+		<AlertDialog.Root closeOnOutsideClick={true}>
+			<AlertDialog.Trigger asChild let:builder>
+				<Button aria-label="Timer Settings" builders={[builder]}
+					>Create Timer <Icon src={Plus} class="ml-2 h-4 w-4" /></Button
+				>
+			</AlertDialog.Trigger>
+			<AlertDialog.Content>
+				<AlertDialog.Header>
+					<div class="flex items-center justify-between">
+						<AlertDialog.Title>Create Timer</AlertDialog.Title>
+						<AlertDialog.Cancel aria-label="Close Dialog"><Icon src={XMark} /></AlertDialog.Cancel>
+					</div>
+				</AlertDialog.Header>
+				<CreateIntervalTimerForm schema={data.form} />
+			</AlertDialog.Content>
+		</AlertDialog.Root>
+
+		<div class="mb-8" />
+
 		<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 			{#if data.intervalTimers}
 				{#each data.intervalTimers as intervalTimer}
@@ -52,11 +74,44 @@
 						}
 					]}
 
-					<Card.Root>
+					<Card.Root
+						class="relative size-full transition-all hover:border-black dark:bg-neutral-950 dark:hover:border-white"
+					>
+						<a
+							href="/timers/{intervalTimer.id}"
+							aria-label="Open {intervalTimer.title}"
+							class="absolute inset-0 z-10 rounded-lg ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+						>
+						</a>
 						<Card.Header>
-							<Card.Title tag="h3">
-								{intervalTimer.title}
-							</Card.Title>
+							<div class="flex items-center justify-between">
+								<Card.Title tag="h3">
+									{intervalTimer.title}
+								</Card.Title>
+
+								<AlertDialog.Root closeOnOutsideClick={true}>
+									<AlertDialog.Trigger asChild let:builder>
+										<Button
+											aria-label="Timer Settings"
+											builders={[builder]}
+											variant="outline"
+											class="relative z-20"><Icon src={Cog6Tooth} class="size-4" /></Button
+										>
+									</AlertDialog.Trigger>
+									<AlertDialog.Content>
+										<AlertDialog.Header>
+											<div class="flex items-center justify-between">
+												<AlertDialog.Title>Update Timer</AlertDialog.Title>
+												<AlertDialog.Cancel aria-label="Close Dialog"
+													><Icon src={XMark} /></AlertDialog.Cancel
+												>
+											</div>
+										</AlertDialog.Header>
+										<UpdateIntervalTimerForm schema={data.form} initialData={intervalTimer} />
+									</AlertDialog.Content>
+								</AlertDialog.Root>
+							</div>
+
 							<Card.Description>{intervalTimer.description}</Card.Description>
 						</Card.Header>
 						<Card.Content>
@@ -71,29 +126,6 @@
 								{/each}
 							</ul>
 						</Card.Content>
-						<Card.Footer class="flex justify-between">
-							<Button href="/timers/{intervalTimer.id}" aria-label="Use {intervalTimer.title} Timer"
-								>Use Timer</Button
-							>
-							<AlertDialog.Root closeOnOutsideClick={true}>
-								<AlertDialog.Trigger asChild let:builder>
-									<Button aria-label="Timer Settings" builders={[builder]} variant="outline"
-										><Icon src={Cog6Tooth} /></Button
-									>
-								</AlertDialog.Trigger>
-								<AlertDialog.Content>
-									<AlertDialog.Header>
-										<div class="flex items-center justify-between">
-											<AlertDialog.Title>Update Timer</AlertDialog.Title>
-											<AlertDialog.Cancel aria-label="Close Dialog"
-												><Icon src={XMark} /></AlertDialog.Cancel
-											>
-										</div>
-									</AlertDialog.Header>
-									<UpdateIntervalTimerForm schema={data.form} initialData={intervalTimer} />
-								</AlertDialog.Content>
-							</AlertDialog.Root>
-						</Card.Footer>
 					</Card.Root>
 				{/each}
 			{/if}
