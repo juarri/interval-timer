@@ -1,7 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 
 import { createTimer } from '$lib/states/local/timer.svelte';
-import { createToggle } from '$lib/states/local/toggle.svelte';
 import { timerDuration } from '$lib/utils/duration';
 
 import type { IntervalTimer } from '$lib/server/db/schema';
@@ -34,8 +33,6 @@ export function createIntervalTimerSequence(intervalTimer: IntervalTimer) {
 
 	const timer = createTimer(currentSet.time);
 
-	const isRunning = createToggle(false);
-
 	const totalTime = $derived(
 		sequence.reduce((acc, set) => acc.add(set.time), Temporal.Duration.from({ seconds: 0 }))
 	);
@@ -44,79 +41,62 @@ export function createIntervalTimerSequence(intervalTimer: IntervalTimer) {
 		sequence
 			.slice(currentSetIndex + 1)
 			.reduce((acc, set) => acc.add(set.time), Temporal.Duration.from({ seconds: 0 }))
-			.add(timer.timeRemaining)
+			.add(timer.remainingTime)
 	);
 
 	const displayTotalTimeRemaining = $derived(timerDuration(totalTimeRemaining));
-	const displayTimerTimeRemaining = $derived(timerDuration(timer.timeRemaining));
+	const displayTimerTimeRemaining = $derived(timerDuration(timer.remainingTime));
 
-	function decrementCurrentSetIndex() {
-		if (currentSetIndex === firstSetIndex) return;
+	function initiateSet(newIndex: number) {
+		if (newIndex < firstSetIndex) {
+			return;
+		}
 
-		currentSetIndex--;
-	}
+		if (newIndex > lastSetIndex) {
+			return;
+		}
 
-	function incrementCurrentSetIndex() {
-		if (currentSetIndex === lastSetIndex) return;
+		if (newIndex === currentSetIndex) {
+			timer.reset();
+			return;
+		}
 
-		currentSetIndex++;
+		currentSetIndex = newIndex;
+		timer.setTotalTime(currentSet.time);
 	}
 
 	function initiatePreviousSet() {
+		if (timer.hasStarted) {
+			timer.reset();
+			return;
+		}
+
 		if (currentSetIndex === firstSetIndex) {
 			timer.reset();
 			return;
 		}
 
-		if (timer.timeRemaining === timer.time) {
-			decrementCurrentSetIndex();
-			timer.setAmountOfTime(currentSet.time);
-
-			return;
-		}
-
-		timer.reset();
+		initiateSet(currentSetIndex - 1);
 	}
 
 	function initiateNextSet() {
 		if (currentSetIndex === lastSetIndex) {
+			timer.isRunning.disable();
 			timer.complete();
 			return;
 		}
 
-		incrementCurrentSetIndex();
-		timer.setAmountOfTime(currentSet.time);
+		initiateSet(currentSetIndex + 1);
 	}
-
-	function initiateSet(index: number) {
-		if (index < firstSetIndex || index > lastSetIndex) return;
-
-		currentSetIndex = index;
-		timer.setAmountOfTime(currentSet.time);
-	}
-
-	$effect(() => {
-		if (isRunning.isEnabled) {
-			timer.isRunning.enable();
-		} else {
-			timer.isRunning.disable();
-		}
-	});
 
 	$effect(() => {
 		if (timer.isCompleted) {
-			initiateNextSet();
+			initiateSet(currentSetIndex + 1);
 		}
 	});
 
 	$effect(() => {
-		if (currentSet === lastSet && timer.isCompleted) {
-			isRunning.disable();
-		}
-	});
-
-	$effect(() => {
-		if (currentSet === lastSet && timer.isCompleted && isRunning.isEnabled) {
+		if (currentSetIndex === lastSetIndex && timer.isCompleted && timer.isRunning.isEnabled) {
 			timer.reset();
 		}
 	});
@@ -152,9 +132,6 @@ export function createIntervalTimerSequence(intervalTimer: IntervalTimer) {
 		get totalTimeRemaining() {
 			return totalTimeRemaining;
 		},
-		get isRunning() {
-			return isRunning;
-		},
 		get displayTotalTimeRemaining() {
 			return displayTotalTimeRemaining;
 		},
@@ -162,8 +139,8 @@ export function createIntervalTimerSequence(intervalTimer: IntervalTimer) {
 			return displayTimerTimeRemaining;
 		},
 		initiateSet,
-		initiateNextSet,
-		initiatePreviousSet
+		initiatePreviousSet,
+		initiateNextSet
 	};
 }
 

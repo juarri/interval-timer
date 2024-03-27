@@ -30,11 +30,11 @@
 </svelte:head>
 
 <main>
-	<div class="h-full lg:hidden">
+	<div class="relative h-full lg:hidden">
 		<Mobile {intervalTimerFormSchema} {intervalTimer} {intervalTimerSequence} {lock} />
 	</div>
 
-	<div class="hidden h-full lg:block" style="height: calc(100dvh - 56px);">
+	<div class="relative hidden h-full lg:block" style="height: calc(100dvh - 56px);">
 		<Desktop {intervalTimerFormSchema} {intervalTimer} {intervalTimerSequence} {lock} />
 	</div>
 </main>

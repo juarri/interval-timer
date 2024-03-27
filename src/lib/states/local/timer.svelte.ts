@@ -2,112 +2,62 @@ import { Temporal } from '@js-temporal/polyfill';
 
 import { createToggle } from './toggle.svelte';
 
+const ONE_SECOND_IN_MILLISECONDS = 1000;
+
 export function createTimer(initialAmountOfTime: Temporal.Duration) {
-	let time = $state(initialAmountOfTime);
-	let timeRemaining = $state(time);
-	let previousTimeRemaining = $state(timeRemaining);
+	let totalTime = $state(initialAmountOfTime);
+	let remainingTime = $state(totalTime);
+	const isCompleted = $derived(remainingTime.blank);
+	const hasStarted = $derived(Temporal.Duration.compare(remainingTime, totalTime));
 
 	const isRunning = createToggle(false);
-	const isCompleted = $derived(timeRemaining.blank);
 
-	let hasReset = $state(false);
-	const hasStarted = $state(false);
-	const hasStopped = $state(false);
-
-	function setAmountOfTime(newAmountOfTime: Temporal.Duration) {
-		time = newAmountOfTime;
-		timeRemaining = time;
-	}
-
-	function decrementTimerBySecond() {
-		previousTimeRemaining = timeRemaining;
-		timeRemaining = timeRemaining.subtract({ seconds: 1 });
+	function setTotalTime(newAmountOfTime: Temporal.Duration) {
+		totalTime = newAmountOfTime;
+		reset();
 	}
 
 	function reset() {
-		timeRemaining = time;
-		previousTimeRemaining = timeRemaining;
-
-		hasReset = true;
+		remainingTime = totalTime;
 	}
 
 	function complete() {
-		timeRemaining = Temporal.Duration.from({ seconds: 0 });
+		remainingTime = Temporal.Duration.from({ seconds: 0 });
 	}
 
-	function onStart(callback: () => void) {
-		$effect(() => {
-			if (isRunning.isEnabled && hasStarted) {
-				callback();
-			}
-		});
-	}
+	function decrementTimerBySecond() {
+		if (isCompleted) {
+			return;
+		}
 
-	function onStop(callback: () => void) {
-		$effect(() => {
-			if (!isRunning.isEnabled && hasStopped) {
-				callback();
-			}
-		});
-	}
-
-	function onComplete(callback: () => void) {
-		$effect(() => {
-			if (isCompleted) {
-				callback();
-			}
-		});
-	}
-
-	function onReset(callback: () => void) {
-		$effect(() => {
-			if (timeRemaining === time && hasReset) {
-				callback();
-			}
-		});
-	}
-
-	function onSecondPassed(
-		callback: (
-			secondsRemaining: Temporal.Duration,
-			previousSecondsRemaining: Temporal.Duration
-		) => void
-	) {
-		$effect(() => {
-			if (timeRemaining !== previousTimeRemaining) {
-				callback(timeRemaining, previousTimeRemaining);
-			}
-		});
+		remainingTime = remainingTime.subtract({ seconds: 1 });
 	}
 
 	$effect(() => {
-		if (isRunning.isEnabled && !timeRemaining.blank) {
-			const interval = setInterval(decrementTimerBySecond, 1000);
-
+		if (isRunning.isEnabled) {
+			const interval = setInterval(decrementTimerBySecond, ONE_SECOND_IN_MILLISECONDS);
 			return () => clearInterval(interval);
 		}
 	});
 
 	return {
-		get time() {
-			return time;
+		get totalTime() {
+			return totalTime;
 		},
-		get timeRemaining() {
-			return timeRemaining;
+		get remainingTime() {
+			return remainingTime;
 		},
 		get isRunning() {
 			return isRunning;
 		},
+		get hasStarted() {
+			return hasStarted;
+		},
 		get isCompleted() {
 			return isCompleted;
 		},
-		setAmountOfTime,
+		setTotalTime,
 		reset,
-		complete,
-		onSecondPassed,
-		onStart,
-		onStop,
-		onComplete,
-		onReset
+		complete
 	};
 }

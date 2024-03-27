@@ -68,7 +68,7 @@
 				<Form.Field {form} name="{durationFieldSet.value}.hours" class="!mt-0">
 					<Form.Control let:attrs>
 						<div class="flex items-center gap-4">
-							<Form.Label>Hours:</Form.Label>
+							<Form.Label>H:</Form.Label>
 							<Input
 								class="w-20 border-x-0 border-b border-t-0"
 								type="number"
@@ -84,7 +84,7 @@
 				<Form.Field {form} name="{durationFieldSet.value}.minutes" class="!mt-0">
 					<Form.Control let:attrs>
 						<div class="flex items-center gap-4">
-							<Form.Label>Minutes:</Form.Label>
+							<Form.Label>M:</Form.Label>
 							<Input
 								class="w-20 border-x-0 border-b border-t-0"
 								type="number"
@@ -100,7 +100,7 @@
 				<Form.Field {form} name="{durationFieldSet.value}.seconds" class="!mt-0">
 					<Form.Control let:attrs>
 						<div class="flex items-center gap-4">
-							<Form.Label>Seconds:</Form.Label>
+							<Form.Label>S:</Form.Label>
 							<Input
 								class="w-20 border-x-0 border-b border-t-0"
 								type="number"
