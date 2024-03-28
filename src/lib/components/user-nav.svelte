@@ -29,11 +29,9 @@
 			</DropdownMenu.Label>
 
 			<DropdownMenu.Separator />
-			
-			<DropdownMenu.Item href="/auth/logout">
-				Log out
-				<DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut>
-			</DropdownMenu.Item>
+
+			<DropdownMenu.Item href="/auth/logout" class="hover:cursor-pointer">Log out</DropdownMenu.Item
+			>
 		{:else}
 			<DropdownMenu.Item href="/auth/login" itemtype="">
 				Log in

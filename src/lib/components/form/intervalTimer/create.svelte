@@ -35,12 +35,7 @@
 	const { form: formData, constraints, enhance } = form;
 </script>
 
-<form
-	method="POST"
-	id="create-interval-timer-form"
-	action={'/timers?/createIntervalTimer'}
-	use:enhance
->
+<form method="POST" id="create-interval-timer-form" action="/interval-timer?/create" use:enhance>
 	<!-- Title -->
 	<Form.Field {form} name="title">
 		<Form.Control let:attrs>

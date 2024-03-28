@@ -1,12 +1,12 @@
 <script lang="ts">
 	import Logo from '$lib/components/logo.svelte';
 
-	import * as Sheet from '$lib/components/ui/sheet';
+	// import * as Sheet from '$lib/components/ui/sheet';
 
 	import ThemePicker from '$lib/components/theme-picker.svelte';
 	import UserNav from '$lib/components/user-nav.svelte';
 
-	import { Icon, Bars3 } from 'svelte-hero-icons';
+	// import { Icon, Bars3 } from 'svelte-hero-icons';
 
 	import type { User } from '$lib/server/db/schema';
 
@@ -17,9 +17,9 @@
 
 <header class="sticky top-0 z-50 w-full border-b bg-background">
 	<div class="container flex h-14 max-w-screen-2xl items-center justify-between">
-		<div class="mr-4 hidden md:flex">
+		<div class="mr-4 flex">
 			<a href="/" class="mr-6 flex items-center space-x-2">
-				<div class="hidden sm:block"><Logo /></div>
+				<div class=""><Logo /></div>
 			</a>
 
 			<!-- <nav class="flex items-center gap-6 text-sm"> -->
@@ -32,24 +32,24 @@
 			<!-- </nav> -->
 		</div>
 
-		<Sheet.Root>
-			<Sheet.Trigger class="md:hidden">
-				<Icon src={Bars3} size="24" />
-				<p class="sr-only">Toggle Menu</p>
-			</Sheet.Trigger>
-
-			<Sheet.Content side="left">
-				<Sheet.Header>
-					<Sheet.Title class="text-left">
-						<Sheet.Close>
-							<a href="/">
-								<Logo />
-							</a>
-						</Sheet.Close>
-					</Sheet.Title>
-				</Sheet.Header>
-			</Sheet.Content>
-		</Sheet.Root>
+		<!-- <Sheet.Root> -->
+		<!-- 	<Sheet.Trigger class="md:hidden"> -->
+		<!-- 		<Icon src={Bars3} size="24" /> -->
+		<!-- 		<p class="sr-only">Toggle Menu</p> -->
+		<!-- 	</Sheet.Trigger> -->
+		<!---->
+		<!-- 	<Sheet.Content side="left"> -->
+		<!-- 		<Sheet.Header> -->
+		<!-- 			<Sheet.Title class="text-left"> -->
+		<!-- 				<Sheet.Close> -->
+		<!-- 					<a href="/"> -->
+		<!-- 						<Logo /> -->
+		<!-- 					</a> -->
+		<!-- 				</Sheet.Close> -->
+		<!-- 			</Sheet.Title> -->
+		<!-- 		</Sheet.Header> -->
+		<!-- 	</Sheet.Content> -->
+		<!-- </Sheet.Root> -->
 
 		<div class="flex flex-1 items-center justify-between space-x-2 md:justify-end">
 			<div></div>

@@ -70,7 +70,7 @@
 <form
 	method="POST"
 	id="update-interval-timer-form"
-	action="/timers?/updateIntervalTimer&id={initialData.id}"
+	action="/interval-timer/{initialData.id}?/update"
 	use:enhance
 >
 	<!-- Title -->
@@ -186,7 +186,7 @@
 		<Form.Button type="submit">Update</Form.Button>
 		<Form.Button
 			aria-label="Delete Timer"
-			formaction="/timers?/deleteIntervalTimer&id={initialData.id}"
+			formaction="/interval-timer/{initialData.id}?/delete"
 			variant="destructive"><Icon src={Trash} /></Form.Button
 		>
 	</div>

@@ -20,7 +20,7 @@ export const load: PageServerLoad = async (event) => {
 		};
 	}
 
-	const routeId = event.params.id;
+	const routeId = event.params.timerId;
 	const intervalTimer = await getIntervalTimerById(routeId);
 	if (!intervalTimer) {
 		return {

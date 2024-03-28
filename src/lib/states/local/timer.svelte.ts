@@ -13,6 +13,13 @@ export function createTimer(initialAmountOfTime: Temporal.Duration) {
 	const isRunning = createToggle(false);
 
 	function setTotalTime(newAmountOfTime: Temporal.Duration) {
+		if (isRunning.isEnabled) {
+			isRunning.disable();
+			totalTime = newAmountOfTime;
+			reset();
+			isRunning.enable();
+		}
+
 		totalTime = newAmountOfTime;
 		reset();
 	}
