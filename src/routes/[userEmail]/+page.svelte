@@ -170,7 +170,7 @@
 				<AlertDialog.Content>
 					<AlertDialog.Header>
 						<div class="flex items-center justify-between">
-							<AlertDialog.Title>Update Timer</AlertDialog.Title>
+							<AlertDialog.Title>Create Timer</AlertDialog.Title>
 							<AlertDialog.Cancel aria-label="Close Dialog"><Icon src={XMark} /></AlertDialog.Cancel
 							>
 						</div>
