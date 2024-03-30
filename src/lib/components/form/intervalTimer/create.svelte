@@ -14,12 +14,12 @@
 	import { currentTime } from '$lib/utils/time';
 
 	type Props = {
-		schema: SuperValidated<IntervalTimerFormSchema>;
+		intervalTimerFormSchema: SuperValidated<IntervalTimerFormSchema>;
 	};
 
-	let { schema }: Props = $props();
+	let { intervalTimerFormSchema }: Props = $props();
 
-	const form = superForm(schema, {
+	const form = superForm(intervalTimerFormSchema, {
 		dataType: 'json',
 		onUpdated({ form }) {
 			if (form.valid) {

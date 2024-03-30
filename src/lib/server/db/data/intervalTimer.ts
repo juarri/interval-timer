@@ -1,7 +1,14 @@
 import { db } from '../index';
 
-import { and, eq, sql, desc } from 'drizzle-orm';
+import { and, eq, sql, desc, asc } from 'drizzle-orm';
 import { intervalTimerTable, type NewIntervalTimer } from '../schema';
+
+type GetIntervalTimersOptions = {
+	take?: number;
+	skip?: number;
+	sortBy?: 'title' | 'accessed' | 'updated';
+	query?: string;
+};
 
 export const getIntervalTimerById = async (id: string) => {
 	return db.query.intervalTimerTable.findFirst({
@@ -9,22 +16,37 @@ export const getIntervalTimerById = async (id: string) => {
 	});
 };
 
-export const getIntervalTimers = async (take: number = 20, skip: number = 0) => {
-	return db.select().from(intervalTimerTable).offset(skip).limit(take);
-};
-
 export const getIntervalTimersByUserId = async (
 	userId: string,
-	take: number = 10,
-	skip: number = 0
+	{ take = 20, skip = 0, sortBy = 'accessed', query }: GetIntervalTimersOptions
 ) => {
-	return db
+	let baseQuery = db
 		.select()
 		.from(intervalTimerTable)
 		.where(eq(intervalTimerTable.userId, userId))
 		.offset(skip)
 		.limit(take)
-		.orderBy(desc(intervalTimerTable.accessedAt));
+		.$dynamic();
+
+	if (query) {
+		baseQuery = baseQuery.where(
+			sql`lower(${intervalTimerTable.title}) LIKE lower('%' || ${query} || '%') OR lower(${intervalTimerTable.description}) LIKE lower('%' || ${query} || '%')`
+		);
+	}
+
+	if (sortBy === 'accessed') {
+		baseQuery = baseQuery.orderBy(desc(intervalTimerTable.accessedAt));
+	}
+
+	if (sortBy === 'updated') {
+		baseQuery = baseQuery.orderBy(desc(intervalTimerTable.updatedAt));
+	}
+
+	if (sortBy === 'title') {
+		baseQuery = baseQuery.orderBy(asc(intervalTimerTable.title));
+	}
+
+	return baseQuery;
 };
 
 export const createIntervalTimer = async (intervalTimer: NewIntervalTimer) => {

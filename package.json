@@ -66,6 +66,7 @@
 		"svelte-sonner": "^0.3.19",
 		"tailwind-merge": "^2.2.2",
 		"tailwind-variants": "^0.1.20",
-		"tailwindcss-animate": "^1.0.7"
+		"tailwindcss-animate": "^1.0.7",
+		"vaul-svelte": "^0.3.0"
 	}
 }

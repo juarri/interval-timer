@@ -1,9 +1,15 @@
 import CreateIntervalTimerForm from './create.svelte';
 import UpdateIntervalTimerForm from './update.svelte';
+import UpdateIntervalTimerButton from './updateButton.svelte';
 import { schema as intervalTimerFormSchema } from './schema';
 import type { Schema as IntervalTimerFormSchema } from './schema';
 
-export { CreateIntervalTimerForm, UpdateIntervalTimerForm, intervalTimerFormSchema };
+export {
+	CreateIntervalTimerForm,
+	UpdateIntervalTimerForm,
+	intervalTimerFormSchema,
+	UpdateIntervalTimerButton
+};
 export type { IntervalTimerFormSchema };
 
 export type formFields = 'preparationTime' | 'goTime' | 'stopTime' | 'cooldownTime';

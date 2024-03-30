@@ -2,7 +2,7 @@ import { google, lucia } from '$lib/server/auth';
 import { OAuth2RequestError } from 'arctic';
 import type { RequestEvent } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { userTable } from '$lib/server/db/schema';
+import { dashboardTable, userTable } from '$lib/server/db/schema';
 import { and, eq } from 'drizzle-orm';
 import { generateId } from 'lucia';
 
@@ -45,7 +45,8 @@ export async function GET(event: RequestEvent): Promise<Response> {
 					lastName: googleUser.family_name,
 					picture: googleUser.picture
 				})
-				.where(eq(userTable.id, existingUser.id));
+				.where(eq(userTable.id, existingUser.id))
+				.returning();
 
 			const session = await lucia.createSession(existingUser.id, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
@@ -64,6 +65,14 @@ export async function GET(event: RequestEvent): Promise<Response> {
 				lastName: googleUser.family_name,
 				picture: googleUser.picture
 			});
+
+			await db.insert(dashboardTable).values({
+				id: generateId(20),
+				userId: userId,
+				sortBy: 'activity',
+				view: 'grid'
+			});
+
 			const session = await lucia.createSession(userId, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
 			event.cookies.set(sessionCookie.name, sessionCookie.value, {

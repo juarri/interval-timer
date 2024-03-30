@@ -74,6 +74,9 @@ dependencies:
   tailwindcss-animate:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.4.3)
+  vaul-svelte:
+    specifier: ^0.3.0
+    version: 0.3.0(svelte@5.0.0-next.87)
 
 devDependencies:
   '@sveltejs/adapter-auto':
@@ -1096,6 +1099,20 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    dev: false
+
+  /@melt-ui/svelte@0.68.0(svelte@5.0.0-next.87):
+    resolution: {integrity: sha512-/QvA98hnYEodZtHJ71+ocum/WWp30hVNt3F8uiZKnNYwZDaiQYjlyR9AaGKYcZLCe6R68op1mfCzc0kTzJilyA==}
+    peerDependencies:
+      svelte: '>=3 <5'
+    dependencies:
+      '@floating-ui/core': 1.6.0
+      '@floating-ui/dom': 1.6.3
+      '@internationalized/date': 3.5.2
+      dequal: 2.0.3
+      focus-trap: 7.5.4
+      nanoid: 5.0.6
+      svelte: 5.0.0-next.87
     dev: false
 
   /@melt-ui/svelte@0.71.2(svelte@5.0.0-next.87):
@@ -2727,6 +2744,17 @@ packages:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
     dependencies:
       file-uri-to-path: 1.0.0
+    dev: false
+
+  /bits-ui@0.16.0(svelte@5.0.0-next.87):
+    resolution: {integrity: sha512-HEkuVDyUG9dTWtKujKpdDsGOe9GRmuYOEF9yGbjVwNazxMQDQa9deUX8vM3ofGBWaJgr1cEu88p38kP5Z5gQ8w==}
+    peerDependencies:
+      svelte: ^4.0.0
+    dependencies:
+      '@internationalized/date': 3.5.2
+      '@melt-ui/svelte': 0.68.0(svelte@5.0.0-next.87)
+      nanoid: 5.0.6
+      svelte: 5.0.0-next.87
     dev: false
 
   /bits-ui@0.17.0(svelte@5.0.0-next.87):
@@ -5358,6 +5386,15 @@ packages:
     engines: {node: '>= 0.10'}
     requiresBuild: true
     optional: true
+
+  /vaul-svelte@0.3.0(svelte@5.0.0-next.87):
+    resolution: {integrity: sha512-+PBfKDWl+xfloe8Tm1G8x3TqbCiUWoyUedU2WC5iE3v6LOYPKo8FyEtzNC5ZqFVVnUKSKNg+4Fi73nuzMkT7JA==}
+    peerDependencies:
+      svelte: ^4.0.0
+    dependencies:
+      bits-ui: 0.16.0(svelte@5.0.0-next.87)
+      svelte: 5.0.0-next.87
+    dev: false
 
   /vite@5.2.6(@types/node@20.11.30):
     resolution: {integrity: sha512-FPtnxFlSIKYjZ2eosBQamz4CbyrTizbZ3hnGJlh/wMtCrlp1Hah6AzBLjGI5I2urTfNnpovpHdrL6YRuBOPnCA==}

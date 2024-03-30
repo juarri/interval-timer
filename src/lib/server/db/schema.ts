@@ -25,6 +25,15 @@ export const sessionTable = sqliteTable('session', {
 export type newSession = typeof sessionTable.$inferInsert;
 export type Session = typeof sessionTable.$inferSelect;
 
+export const dashboardTable = sqliteTable('dashboard', {
+	id: text('id').notNull().primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => userTable.id, { onDelete: 'cascade' }),
+	sortBy: text('sort_by', { enum: ['title', 'accessed', 'updated'] }).notNull(),
+	view: text('view', { enum: ['list', 'grid'] }).notNull()
+});
+
 export const intervalTimerTable = sqliteTable('interval_timer', {
 	id: text('id').notNull().primaryKey(),
 	userId: text('user_id')

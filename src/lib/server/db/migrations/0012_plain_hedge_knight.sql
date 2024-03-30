@@ -1,0 +1,1 @@
+ALTER TABLE menu_options ADD `id` text PRIMARY KEY NOT NULL;
