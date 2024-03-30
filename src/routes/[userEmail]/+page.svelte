@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	import type { PageData } from './$types';
 
@@ -34,13 +33,11 @@
 	export let data: PageData;
 
 	function setQueryParameter(paramName: string, paramValue: string) {
-		if (browser) {
-			const url = new URL(window.location.href);
+		const url = new URL(window.location.href);
 
-			url.searchParams.set(paramName, paramValue);
+		url.searchParams.set(paramName, paramValue);
 
-			goto(url.toString());
-		}
+		goto(url.toString());
 	}
 
 	const sortByOptions = [

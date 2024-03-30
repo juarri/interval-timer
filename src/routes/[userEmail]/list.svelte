@@ -50,7 +50,7 @@
 		]}
 
 		<Card.Root
-			class="relative flex size-full flex-col justify-between transition-all hover:border-black dark:bg-neutral-950 dark:hover:border-white md:flex-row"
+			class="relative p-6 transition-all  hover:border-black dark:bg-neutral-950 dark:hover:border-white md:flex-row md:py-4 "
 		>
 			<a
 				href="/timers/{intervalTimer.id}"
@@ -58,19 +58,23 @@
 				class="absolute inset-0 z-10 rounded-lg ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 			>
 			</a>
-			<Card.Header>
-				<div class="flex items-center justify-between">
+
+			<div
+				class="flex flex-col flex-wrap items-center justify-between gap-6 md:grid md:grid-cols-4 md:flex-row md:place-content-center"
+			>
+				<div class="flex w-full items-center justify-between md:w-fit">
 					<Card.Title tag="h3">
 						{intervalTimer.title}
 					</Card.Title>
 
-					<UpdateIntervalTimerButton {intervalTimer} {intervalTimerFormSchema} />
+					<div class="md:hidden">
+						<UpdateIntervalTimerButton {intervalTimer} {intervalTimerFormSchema} />
+					</div>
 				</div>
 
-				<Card.Description>{intervalTimer.description}</Card.Description>
-			</Card.Header>
-			<Card.Content>
-				<ul class="grid grid-cols-2 gap-y-2">
+				<Card.Description class="w-full text-left">{intervalTimer.description}</Card.Description>
+
+				<ul class="grid w-full grid-cols-2 gap-2">
 					{#each labels as label}
 						<li>
 							<p>
@@ -80,7 +84,11 @@
 						</li>
 					{/each}
 				</ul>
-			</Card.Content>
+
+				<div class="hidden place-content-center md:grid">
+					<UpdateIntervalTimerButton {intervalTimer} {intervalTimerFormSchema} />
+				</div>
+			</div>
 		</Card.Root>
 	{/each}
 </div>
