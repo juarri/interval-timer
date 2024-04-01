@@ -23,7 +23,7 @@
 <div class="flex min-h-screen flex-col">
 	<Header user={data.user} />
 
-	<div class="flex-1">
+	<div class="relative size-full flex-1">
 		<slot />
 	</div>
 

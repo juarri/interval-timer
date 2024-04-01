@@ -33,7 +33,7 @@
 			<DropdownMenu.Item href="/auth/logout" class="hover:cursor-pointer">Log out</DropdownMenu.Item
 			>
 		{:else}
-			<DropdownMenu.Item href="/auth/login" itemtype="">
+			<DropdownMenu.Item href="/auth/login/google" itemtype="">
 				Log in
 				<!-- <DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut> -->
 			</DropdownMenu.Item>
