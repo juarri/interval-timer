@@ -69,7 +69,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 			await db.insert(dashboardTable).values({
 				id: generateId(20),
 				userId: userId,
-				sortBy: 'activity',
+				sortBy: 'accessed',
 				view: 'grid'
 			});
 
