@@ -18,11 +18,6 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		throw new Error('Invalid request');
 	}
 
-	if (!code || !storedState || !storedCodeVerifier || state !== storedState) {
-		// 400
-		throw new Error('Invalid request');
-	}
-
 	try {
 		const tokens = await google.validateAuthorizationCode(code, storedCodeVerifier);
 		const response = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
@@ -94,6 +89,9 @@ export async function GET(event: RequestEvent): Promise<Response> {
 				status: 400
 			});
 		}
+
+		console.log(e);
+
 		return new Response(null, {
 			status: 500
 		});

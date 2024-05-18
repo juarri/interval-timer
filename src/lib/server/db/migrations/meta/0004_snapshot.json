@@ -1,8 +1,6 @@
 {
-  "version": "5",
+  "version": "6",
   "dialect": "sqlite",
-  "id": "3f673fd2-2ad6-4e1b-95c7-ebecbba05ad1",
-  "prevId": "89538593-68ef-4985-a5af-4ffbf43deff3",
   "tables": {
     "interval_timer": {
       "name": "interval_timer",
@@ -85,15 +83,15 @@
         "interval_timer_user_id_user_id_fk": {
           "name": "interval_timer_user_id_user_id_fk",
           "tableFrom": "interval_timer",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -129,15 +127,15 @@
         "session_user_id_user_id_fk": {
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -212,12 +210,13 @@
   },
   "enums": {},
   "_meta": {
-    "schemas": {},
     "tables": {},
     "columns": {
       "\"interval_timer\".\"work_time\"": "\"interval_timer\".\"go_time\"",
       "\"interval_timer\".\"rest_time\"": "\"interval_timer\".\"stop_time\"",
       "\"interval_timer\".\"amount_of_cycles\"": "\"interval_timer\".\"intervals\""
     }
-  }
+  },
+  "id": "3f673fd2-2ad6-4e1b-95c7-ebecbba05ad1",
+  "prevId": "89538593-68ef-4985-a5af-4ffbf43deff3"
 }

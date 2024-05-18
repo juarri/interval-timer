@@ -1,8 +1,6 @@
 {
-  "version": "5",
+  "version": "6",
   "dialect": "sqlite",
-  "id": "5bd81275-dd41-449b-b5b2-11495bc71441",
-  "prevId": "71c39270-3c6c-428b-aa05-983e53eaadf0",
   "tables": {
     "interval_timer": {
       "name": "interval_timer",
@@ -108,15 +106,15 @@
         "interval_timer_user_id_user_id_fk": {
           "name": "interval_timer_user_id_user_id_fk",
           "tableFrom": "interval_timer",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -152,15 +150,15 @@
         "menu_options_user_id_user_id_fk": {
           "name": "menu_options_user_id_user_id_fk",
           "tableFrom": "menu_options",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -196,15 +194,15 @@
         "session_user_id_user_id_fk": {
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -279,8 +277,9 @@
   },
   "enums": {},
   "_meta": {
-    "schemas": {},
     "tables": {},
     "columns": {}
-  }
+  },
+  "id": "5bd81275-dd41-449b-b5b2-11495bc71441",
+  "prevId": "71c39270-3c6c-428b-aa05-983e53eaadf0"
 }
