@@ -43,6 +43,19 @@ export async function GET(event: RequestEvent): Promise<Response> {
 				.where(eq(userTable.id, existingUser.id))
 				.returning();
 
+			const existingDashboard = await db.query.dashboardTable.findFirst({
+				where: eq(dashboardTable.userId, existingUser.id)
+			});
+
+			if (!existingDashboard) {
+				await db.insert(dashboardTable).values({
+					id: generateId(20),
+					userId: existingUser.id,
+					sortBy: 'accessed',
+					view: 'grid'
+				});
+			}
+
 			const session = await lucia.createSession(existingUser.id, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
 			event.cookies.set(sessionCookie.name, sessionCookie.value, {
