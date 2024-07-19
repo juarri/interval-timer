@@ -1,6 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
+  "id": "cc2adea2-4462-43d2-9920-bfc718724dad",
+  "prevId": "3f39ba54-8800-46eb-8269-5e2fe4afcd54",
   "tables": {
     "dashboard": {
       "name": "dashboard",
@@ -34,20 +36,28 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "dashboard_user_id_unique": {
+          "name": "dashboard_user_id_unique",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {
         "dashboard_user_id_user_id_fk": {
           "name": "dashboard_user_id_user_id_fk",
           "tableFrom": "dashboard",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
-          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -157,15 +167,15 @@
         "interval_timer_user_id_user_id_fk": {
           "name": "interval_timer_user_id_user_id_fk",
           "tableFrom": "interval_timer",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
-          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -201,15 +211,15 @@
         "session_user_id_user_id_fk": {
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
-          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -269,6 +279,13 @@
         }
       },
       "indexes": {
+        "user_provider_id_unique": {
+          "name": "user_provider_id_unique",
+          "columns": [
+            "provider_id"
+          ],
+          "isUnique": true
+        },
         "user_email_unique": {
           "name": "user_email_unique",
           "columns": [
@@ -284,11 +301,8 @@
   },
   "enums": {},
   "_meta": {
-    "tables": {
-      "\"menu_options\"": "\"dashboard\""
-    },
+    "schemas": {},
+    "tables": {},
     "columns": {}
-  },
-  "id": "b70fa54c-b4ab-4db3-9afc-0d6b871d5a72",
-  "prevId": "580b5154-58b0-4609-84fe-8fa439ac97d6"
+  }
 }

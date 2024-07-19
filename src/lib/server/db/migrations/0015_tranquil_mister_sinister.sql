@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `dashboard_user_id_unique` ON `dashboard` (`user_id`);

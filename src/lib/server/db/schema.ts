@@ -4,7 +4,7 @@ import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 export const userTable = sqliteTable('user', {
 	id: text('id').notNull().primaryKey(),
 	provider: text('provider', { enum: ['google'] }).notNull(),
-	providerId: text('provider_id').notNull(),
+	providerId: text('provider_id').notNull().unique(),
 	firstName: text('first_name').notNull(),
 	lastName: text('last_name').notNull(),
 	email: text('email').unique().notNull(),
@@ -29,6 +29,7 @@ export const dashboardTable = sqliteTable('dashboard', {
 	id: text('id').notNull().primaryKey(),
 	userId: text('user_id')
 		.notNull()
+		.unique()
 		.references(() => userTable.id, { onDelete: 'cascade' }),
 	sortBy: text('sort_by', { enum: ['title', 'accessed', 'updated'] }).notNull(),
 	view: text('view', { enum: ['list', 'grid'] }).notNull()

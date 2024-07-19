@@ -1,8 +1,6 @@
 {
-  "version": "5",
+  "version": "6",
   "dialect": "sqlite",
-  "id": "03bb64df-9bb9-4221-8895-04761d0f1d38",
-  "prevId": "ee584c7e-d802-400e-b03d-27d43e787376",
   "tables": {
     "interval_timer": {
       "name": "interval_timer",
@@ -57,15 +55,15 @@
         "interval_timer_user_id_user_id_fk": {
           "name": "interval_timer_user_id_user_id_fk",
           "tableFrom": "interval_timer",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -101,15 +99,15 @@
         "session_user_id_user_id_fk": {
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -184,10 +182,11 @@
   },
   "enums": {},
   "_meta": {
-    "schemas": {},
     "tables": {
       "\"routine\"": "\"interval_timer\""
     },
     "columns": {}
-  }
+  },
+  "id": "03bb64df-9bb9-4221-8895-04761d0f1d38",
+  "prevId": "ee584c7e-d802-400e-b03d-27d43e787376"
 }
