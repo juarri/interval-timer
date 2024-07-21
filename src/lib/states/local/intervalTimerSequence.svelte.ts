@@ -1,37 +1,43 @@
 import { Temporal } from '@js-temporal/polyfill';
-
 import { createTimer } from '$lib/states/local/timer.svelte';
-import { timerDuration } from '$lib/utils/duration';
-
 import type { IntervalTimer } from '$lib/server/db/schema';
 
+// const ZERO_SECONDS = Temporal.Duration.from({ seconds: 0 });
+
+const SET_NAMES = {
+	PREP: 'Prep',
+	STOP: 'Stop',
+	GO: 'Go',
+	COOLDOWN: 'Cooldown'
+};
+
+function createSet(name: string, time: number) {
+	return {
+		name,
+		time: Temporal.Duration.from({ seconds: time })
+	};
+}
+
+function createSequence(intervalTimer: IntervalTimer) {
+	const intervalSets = Array.from({ length: intervalTimer.intervals }, () => [
+		createSet(SET_NAMES.GO, intervalTimer.goTime),
+		createSet(SET_NAMES.STOP, intervalTimer.stopTime)
+	])
+		.flat()
+		.slice(0, -1);
+
+	return [
+		createSet(SET_NAMES.PREP, intervalTimer.preparationTime),
+		...intervalSets,
+		createSet(SET_NAMES.COOLDOWN, intervalTimer.cooldownTime)
+	];
+}
+
 export function createIntervalTimerSequence(intervalTimer: IntervalTimer) {
-	const sequence = $state([
-		{
-			name: 'Prep',
-			time: Temporal.Duration.from({ seconds: intervalTimer.preparationTime })
-		},
-		...Array.from({ length: intervalTimer.intervals * 2 - 1 }, (_, i) =>
-			i % 2
-				? { name: 'Stop', time: Temporal.Duration.from({ seconds: intervalTimer.stopTime }) }
-				: { name: 'Go', time: Temporal.Duration.from({ seconds: intervalTimer.goTime }) }
-		),
-		{
-			name: 'Cooldown',
-			time: Temporal.Duration.from({ seconds: intervalTimer.cooldownTime })
-		}
-	]);
+	const sequence = createSequence(intervalTimer);
 
-	const firstSetIndex = $state(0);
-	const firstSet = $derived(sequence[firstSetIndex]);
-
-	const lastSetIndex = $state(sequence.length - 1);
-	const lastSet = $derived(sequence[lastSetIndex]);
-
-	let currentSetIndex = $state(firstSetIndex);
-	const currentSet = $derived(sequence[currentSetIndex]);
-
-	const timer = createTimer(currentSet.time);
+	let currentSetIndex = $state(0);
+	const timer = createTimer(sequence[currentSetIndex].time);
 
 	const totalTime = $derived(
 		sequence.reduce((acc, set) => acc.add(set.time), Temporal.Duration.from({ seconds: 0 }))
@@ -44,61 +50,40 @@ export function createIntervalTimerSequence(intervalTimer: IntervalTimer) {
 			.add(timer.remainingTime)
 	);
 
-	const displayTotalTimeRemaining = $derived(timerDuration(totalTimeRemaining));
-	const displayTimerTimeRemaining = $derived(timerDuration(timer.remainingTime));
-
-	function initiateSet(newIndex: number) {
-		if (newIndex < firstSetIndex) {
-			return;
-		}
-
-		if (newIndex > lastSetIndex) {
-			return;
-		}
-
-		if (newIndex === currentSetIndex) {
-			timer.reset();
-			return;
+	function startSetAtIndex(newIndex: number) {
+		if (newIndex < 0 || newIndex >= sequence.length) {
+			throw new Error(`Invalid set index: ${newIndex}`);
 		}
 
 		currentSetIndex = newIndex;
-		timer.setTotalTime(currentSet.time);
+		timer.setTotalTime(sequence[currentSetIndex].time);
 	}
 
-	function initiatePreviousSet() {
-		if (timer.hasStarted) {
+	function startPreviousSet() {
+		if (currentSetIndex === 0) {
 			timer.reset();
 			return;
 		}
 
-		if (currentSetIndex === firstSetIndex) {
+		if (timer.totalTime !== timer.remainingTime) {
 			timer.reset();
 			return;
 		}
 
-		initiateSet(currentSetIndex - 1);
+		startSetAtIndex(currentSetIndex - 1);
 	}
 
-	function initiateNextSet() {
-		if (currentSetIndex === lastSetIndex) {
+	function startNextSet() {
+		if (currentSetIndex === sequence.length - 1 && timer.isCompleted) {
 			timer.isRunning.disable();
-			timer.complete();
 			return;
 		}
 
-		initiateSet(currentSetIndex + 1);
+		startSetAtIndex(currentSetIndex + 1);
 	}
 
-	$effect(() => {
-		if (timer.isCompleted) {
-			initiateSet(currentSetIndex + 1);
-		}
-	});
-
-	$effect(() => {
-		if (currentSetIndex === lastSetIndex && timer.isCompleted && timer.isRunning.isEnabled) {
-			timer.reset();
-		}
+	timer.onComplete(() => {
+		startNextSet();
 	});
 
 	return {
@@ -109,19 +94,7 @@ export function createIntervalTimerSequence(intervalTimer: IntervalTimer) {
 			return currentSetIndex;
 		},
 		get currentSet() {
-			return currentSet;
-		},
-		get firstSetIndex() {
-			return firstSetIndex;
-		},
-		get firstSet() {
-			return firstSet;
-		},
-		get lastSetIndex() {
-			return lastSetIndex;
-		},
-		get lastSet() {
-			return lastSet;
+			return sequence[currentSetIndex];
 		},
 		get timer() {
 			return timer;
@@ -132,15 +105,9 @@ export function createIntervalTimerSequence(intervalTimer: IntervalTimer) {
 		get totalTimeRemaining() {
 			return totalTimeRemaining;
 		},
-		get displayTotalTimeRemaining() {
-			return displayTotalTimeRemaining;
-		},
-		get displayTimerTimeRemaining() {
-			return displayTimerTimeRemaining;
-		},
-		initiateSet,
-		initiatePreviousSet,
-		initiateNextSet
+		startSetAtIndex,
+		startPreviousSet,
+		startNextSet
 	};
 }
 

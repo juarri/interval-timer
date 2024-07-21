@@ -7,6 +7,8 @@
 	import Desktop from './desktop.svelte';
 	import Mobile from './mobile.svelte';
 
+	import timerDuration from '$lib/utils/duration/timerDuration';
+
 	export let data: PageData;
 
 	let intervalTimerFormSchema = data.intervalTimerFormSchema;
@@ -14,11 +16,29 @@
 
 	let lock = createToggle(false);
 	let intervalTimerSequence = createIntervalTimerSequence(intervalTimer);
+
+	$: displayTimerTimeRemaining = timerDuration(intervalTimerSequence.timer.remainingTime);
+
+	intervalTimerSequence.timer.onStart(() => {
+		console.log('timer started');
+	});
+
+	intervalTimerSequence.timer.onSecondPassed(() => {
+		console.log('timer second passed');
+	});
+
+	intervalTimerSequence.timer.onStop(() => {
+		console.log('timer stopped');
+	});
+
+	intervalTimerSequence.timer.onComplete(() => {
+		console.log('timer completed');
+	});
 </script>
 
 <svelte:head>
 	<title
-		>{intervalTimerSequence.displayTimerTimeRemaining} - {intervalTimerSequence.currentSet.name} - {intervalTimer?.title}
+		>{displayTimerTimeRemaining} - {intervalTimerSequence.currentSet.name} - {intervalTimer?.title}
 		- Interval Timers</title
 	>
 </svelte:head>
