@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import { createTimer } from '$lib/states/local/timer.svelte';
 import type { IntervalTimer } from '$lib/server/db/schema';
 
-// const ZERO_SECONDS = Temporal.Duration.from({ seconds: 0 });
+const ZERO_SECONDS = Temporal.Duration.from({ seconds: 0 });
 
 const SET_NAMES = {
 	PREP: 'Prep',
@@ -76,6 +76,11 @@ export function createIntervalTimerSequence(intervalTimer: IntervalTimer) {
 	function startNextSet() {
 		if (currentSetIndex === sequence.length - 1 && timer.isCompleted) {
 			timer.isRunning.disable();
+			return;
+		}
+
+		if (currentSetIndex === sequence.length - 1) {
+			timer.setRemainingTime(ZERO_SECONDS);
 			return;
 		}
 
