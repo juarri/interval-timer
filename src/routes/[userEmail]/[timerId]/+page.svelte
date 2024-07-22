@@ -9,6 +9,8 @@
 
 	import timerDuration from '$lib/utils/duration/timerDuration';
 
+	import { Howl } from 'howler';
+
 	export let data: PageData;
 
 	let intervalTimerFormSchema = data.intervalTimerFormSchema;
@@ -19,20 +21,29 @@
 
 	$: displayTimerTimeRemaining = timerDuration(intervalTimerSequence.timer.remainingTime);
 
-	intervalTimerSequence.timer.onStart(() => {
-		console.log('timer started');
+	const sound = new Howl({
+		src: ['/sounds/boop.wav']
 	});
 
 	intervalTimerSequence.timer.onSecondPassed(() => {
-		console.log('timer second passed');
-	});
+		const isAboutToEnd = intervalTimerSequence.timer.remainingTime.seconds <= 3;
 
-	intervalTimerSequence.timer.onStop(() => {
-		console.log('timer stopped');
+		if (isAboutToEnd) {
+			sound.play();
+			navigator.vibrate(200);
+		}
 	});
 
 	intervalTimerSequence.timer.onComplete(() => {
-		console.log('timer completed');
+		const isEvenSet = intervalTimerSequence.sets.length % 2 === 0;
+
+		if (isEvenSet) {
+			sound.play();
+			navigator.vibrate(200);
+		} else {
+			sound.play();
+			navigator.vibrate(200);
+		}
 	});
 </script>
 
