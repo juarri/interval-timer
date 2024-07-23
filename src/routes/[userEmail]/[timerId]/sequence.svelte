@@ -19,15 +19,17 @@
 		<li class="last:col-span-2">
 			<Button
 				id={`set-${i + 1}`}
-				aria-label={`Set ${i + 1}`}
-				onclick={() => intervalTimerSequence.initiateSet(i)}
+				aria-label={`Start Set ${i + 1}`}
+				onclick={() => intervalTimerSequence.startSetAtIndex(i)}
 				variant="outline"
 				class={cn([
 					'relative h-full w-full rounded p-4 text-center text-xl focus:z-10',
-					intervalTimerSequence.currentSetIndex === i &&
-						'border-neutral-700 bg-neutral-200 dark:border-neutral-300 dark:bg-neutral-800'
+					{
+						'border-neutral-700 bg-neutral-200 dark:border-neutral-300 dark:bg-neutral-800':
+							intervalTimerSequence.currentSetIndex === i
+					}
 				])}
-				disabled={lock.isEnabled}>{i + 1}. {set.name}</Button
+				disabled={lock.isActive}>{i + 1}. {set.name}</Button
 			>
 		</li>
 	{/each}

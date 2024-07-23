@@ -27,7 +27,7 @@
 
 		{@const labels = [
 			{
-				label: 'Total',
+				label: 'Time',
 				value: readableDuration(totalTime)
 			},
 			{

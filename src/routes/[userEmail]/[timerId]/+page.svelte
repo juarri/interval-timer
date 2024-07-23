@@ -1,5 +1,5 @@
 <script lang="ts">
-	// import { browser } from '$app/environment';
+	import type { PageData } from './$types';
 
 	import { createIntervalTimerSequence } from '$lib/states/local/intervalTimerSequence.svelte';
 	import { createToggle } from '$lib/states/local/toggle.svelte';
@@ -7,25 +7,47 @@
 	import Desktop from './desktop.svelte';
 	import Mobile from './mobile.svelte';
 
-	import type { IntervalTimer } from '$lib/server/db/schema';
+	import timerDuration from '$lib/utils/duration/timerDuration';
 
-	import type { PageData } from './$types';
-	import type { IntervalTimerFormSchema } from '$lib/components/form/intervalTimer';
-	import type { SuperValidated } from 'sveltekit-superforms';
+	import { Howl } from 'howler';
+
 	export let data: PageData;
 
-	let intervalTimerFormSchema =
-		data.intervalTimerFormSchema as SuperValidated<IntervalTimerFormSchema>;
-	let intervalTimer = data.intervalTimer as IntervalTimer;
+	let intervalTimerFormSchema = data.intervalTimerFormSchema;
+	let intervalTimer = data.intervalTimer;
 
 	let lock = createToggle(false);
-	let intervalTimerSequence = createIntervalTimerSequence(data.intervalTimer as IntervalTimer);
+	let intervalTimerSequence = createIntervalTimerSequence(intervalTimer);
+
+	$: displayTimerTimeRemaining = timerDuration(intervalTimerSequence.timer.remainingTime);
+
+	const sound = new Howl({
+		src: ['/sounds/boop.wav']
+	});
+
+	intervalTimerSequence.timer.onSecondPassed(() => {
+		const isAboutToEnd = intervalTimerSequence.timer.remainingTime.seconds <= 3;
+
+		if (isAboutToEnd) {
+			sound.play();
+		}
+	});
+
+	intervalTimerSequence.timer.onComplete(() => {
+		const isEvenSet = intervalTimerSequence.sets.length % 2 === 0;
+
+		if (isEvenSet) {
+			sound.play();
+		} else {
+			sound.play();
+		}
+	});
 </script>
 
 <svelte:head>
 	<title
-		>{intervalTimerSequence.displayTimerTimeRemaining} - {intervalTimerSequence.currentSet.name} - {data
-			.intervalTimer?.title} - Interval Timers</title
+		>{displayTimerTimeRemaining} - {intervalTimerSequence.currentSet.name} - {intervalTimer?.title}
+		- Interval Timers</title
 	>
 </svelte:head>
 
