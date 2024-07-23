@@ -6,10 +6,8 @@
 	import { Input } from '$lib/components/ui/input';
 	import { toast } from 'svelte-sonner';
 
-	import {
-		durationFieldSets,
-		type IntervalTimerFormSchema
-	} from '$lib/components/form/intervalTimer/';
+	import { durationFieldSets } from '$lib/components/form/intervalTimer/';
+	import type { IntervalTimerFormSchema } from '$lib/components/form/intervalTimer/';
 	import type { IntervalTimer } from '$lib/server/db/schema';
 
 	import { secondsToDuration } from '$lib/utils/duration';
