@@ -30,7 +30,6 @@
 
 		if (isAboutToEnd) {
 			sound.play();
-			navigator.vibrate(200);
 		}
 	});
 
@@ -39,10 +38,8 @@
 
 		if (isEvenSet) {
 			sound.play();
-			navigator.vibrate(200);
 		} else {
 			sound.play();
-			navigator.vibrate(200);
 		}
 	});
 </script>
